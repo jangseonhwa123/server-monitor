@@ -39,6 +39,23 @@ using (var conn = OpenDb())
     cmd.ExecuteNonQuery();
 }
 
+// 에이전트 인증: POST /api/metrics 는 올바른 API 키가 있어야 합니다
+var apiKey = app.Configuration["MONITOR_API_KEY"] ?? "dev-secret-key";
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "POST" && context.Request.Path.StartsWithSegments("/api/metrics"))
+    {
+        if (!context.Request.Headers.TryGetValue("X-Api-Key", out var key) || key != apiKey)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Invalid API key");
+            return;
+        }
+    }
+    await next();
+});
+
 app.MapGet("/", () => "Server Monitor is running");
 
 app.MapPost("/api/metrics", (MetricDto metric) =>
@@ -179,4 +196,5 @@ app.MapGet("/api/devices/{name}/history", (string name, int? limit) =>
 app.Run();
 
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
+
 

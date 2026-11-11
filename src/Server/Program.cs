@@ -149,6 +149,34 @@ app.MapGet("/api/alerts", (int? limit) =>
     return Results.Ok(list);
 });
 
+// 장비별 최근 기록 (그래프용, 오래된 순)
+app.MapGet("/api/devices/{name}/history", (string name, int? limit) =>
+{
+    using var conn = OpenDb();
+    var cmd = conn.CreateCommand();
+    cmd.CommandText = """
+        SELECT Cpu, Memory, Timestamp FROM (
+            SELECT Id, Cpu, Memory, Timestamp FROM Metrics
+            WHERE DeviceName = $n ORDER BY Id DESC LIMIT $l
+        ) ORDER BY Id ASC
+        """;
+    cmd.Parameters.AddWithValue("$n", name);
+    cmd.Parameters.AddWithValue("$l", limit ?? 60);
+    using var reader = cmd.ExecuteReader();
+    var list = new List<object>();
+    while (reader.Read())
+    {
+        list.Add(new
+        {
+            Cpu = reader.GetDouble(0),
+            Memory = reader.GetDouble(1),
+            Timestamp = reader.GetString(2)
+        });
+    }
+    return Results.Ok(list);
+});
+
 app.Run();
 
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
+

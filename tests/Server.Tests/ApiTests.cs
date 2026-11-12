@@ -5,7 +5,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-public class ApiTests : IClassFixture<ApiFactory>
+[Collection("api")]
+public class ApiTests
 {
     private readonly ApiFactory _factory;
 
@@ -113,3 +114,4 @@ public class ApiTests : IClassFixture<ApiFactory>
         Assert.Equal(0, count);
     }
 }
+

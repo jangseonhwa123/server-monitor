@@ -42,6 +42,10 @@ using (var conn = OpenDb())
     cmd.ExecuteNonQuery();
 }
 
+// 오래된 데이터 자동 삭제 (보존 기간은 MONITOR_RETENTION_DAYS, 기본 7일)
+var retentionDays = int.TryParse(app.Configuration["MONITOR_RETENTION_DAYS"], out var parsedDays) && parsedDays > 0 ? parsedDays : 7;
+_ = Task.Run(() => RetentionJob.RunAsync(OpenDb, TimeSpan.FromDays(retentionDays), TimeSpan.FromHours(1), app.Lifetime.ApplicationStopping));
+
 // 에이전트 인증: POST /api/metrics 는 올바른 API 키가 있어야 합니다
 var apiKey = app.Configuration["MONITOR_API_KEY"] ?? "dev-secret-key";
 
@@ -66,6 +70,12 @@ app.MapGet("/", () => "Server Monitor is running");
 
 app.MapPost("/api/metrics", async (MetricDto metric, IHubContext<MonitorHub> hub) =>
 {
+    var validationError = MetricValidator.Validate(metric);
+    if (validationError != null)
+    {
+        return Results.BadRequest(new { error = validationError });
+    }
+
     if (!MetricQueue.Enqueue(metric, OpenDb))
     {
         return Results.StatusCode(503);
@@ -213,6 +223,8 @@ app.Run();
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
 
 class MonitorHub : Hub { }
+
+
 
 
 

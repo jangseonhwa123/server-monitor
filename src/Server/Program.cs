@@ -1,9 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Data.Sqlite;
 
 const double CpuThreshold = 80.0;
 const int AlertCooldownSeconds = 60;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 var dbPath = Path.Combine(builder.Environment.ContentRootPath, "monitor.db");
@@ -56,9 +58,12 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// 실시간 푸시용 SignalR 허브
+app.MapHub<MonitorHub>("/hub/monitor");
+
 app.MapGet("/", () => "Server Monitor is running");
 
-app.MapPost("/api/metrics", (MetricDto metric) =>
+app.MapPost("/api/metrics", async (MetricDto metric, IHubContext<MonitorHub> hub) =>
 {
     using var conn = OpenDb();
 
@@ -69,6 +74,9 @@ app.MapPost("/api/metrics", (MetricDto metric) =>
     insert.Parameters.AddWithValue("$m", metric.Memory);
     insert.Parameters.AddWithValue("$t", metric.Timestamp.ToString("o"));
     insert.ExecuteNonQuery();
+
+    // 연결된 모든 관제 화면에 즉시 전달
+    await hub.Clients.All.SendAsync("MetricReceived", metric);
 
     // CPU 임계값 초과 시 알람 기록 (같은 장비는 60초에 한 번만)
     if (metric.Cpu >= CpuThreshold)
@@ -81,14 +89,24 @@ app.MapPost("/api/metrics", (MetricDto metric) =>
 
         if (recent == 0)
         {
+            var alertTime = DateTime.UtcNow;
             var alert = conn.CreateCommand();
             alert.CommandText = "INSERT INTO Alerts (DeviceName, Type, Value, Threshold, Timestamp) VALUES ($d, 'CPU', $v, $th, $ts)";
             alert.Parameters.AddWithValue("$d", metric.DeviceName);
             alert.Parameters.AddWithValue("$v", metric.Cpu);
             alert.Parameters.AddWithValue("$th", CpuThreshold);
-            alert.Parameters.AddWithValue("$ts", DateTime.UtcNow.ToString("o"));
+            alert.Parameters.AddWithValue("$ts", alertTime.ToString("o"));
             alert.ExecuteNonQuery();
             Console.WriteLine($"[ALERT] {metric.DeviceName} CPU {metric.Cpu:F1}% (기준 {CpuThreshold}%)");
+
+            await hub.Clients.All.SendAsync("AlertRaised", new
+            {
+                DeviceName = metric.DeviceName,
+                Type = "CPU",
+                Value = metric.Cpu,
+                Threshold = CpuThreshold,
+                TimestampUtc = alertTime
+            });
         }
     }
 
@@ -143,29 +161,6 @@ app.MapGet("/api/devices", () =>
     return Results.Ok(list);
 });
 
-// 알람 이력
-app.MapGet("/api/alerts", (int? limit) =>
-{
-    using var conn = OpenDb();
-    var cmd = conn.CreateCommand();
-    cmd.CommandText = "SELECT DeviceName, Type, Value, Threshold, Timestamp FROM Alerts ORDER BY Id DESC LIMIT $l";
-    cmd.Parameters.AddWithValue("$l", limit ?? 20);
-    using var reader = cmd.ExecuteReader();
-    var list = new List<object>();
-    while (reader.Read())
-    {
-        list.Add(new
-        {
-            DeviceName = reader.GetString(0),
-            Type = reader.GetString(1),
-            Value = reader.GetDouble(2),
-            Threshold = reader.GetDouble(3),
-            TimestampUtc = reader.GetString(4)
-        });
-    }
-    return Results.Ok(list);
-});
-
 // 장비별 최근 기록 (그래프용, 오래된 순)
 app.MapGet("/api/devices/{name}/history", (string name, int? limit) =>
 {
@@ -193,8 +188,31 @@ app.MapGet("/api/devices/{name}/history", (string name, int? limit) =>
     return Results.Ok(list);
 });
 
+// 알람 이력
+app.MapGet("/api/alerts", (int? limit) =>
+{
+    using var conn = OpenDb();
+    var cmd = conn.CreateCommand();
+    cmd.CommandText = "SELECT DeviceName, Type, Value, Threshold, Timestamp FROM Alerts ORDER BY Id DESC LIMIT $l";
+    cmd.Parameters.AddWithValue("$l", limit ?? 20);
+    using var reader = cmd.ExecuteReader();
+    var list = new List<object>();
+    while (reader.Read())
+    {
+        list.Add(new
+        {
+            DeviceName = reader.GetString(0),
+            Type = reader.GetString(1),
+            Value = reader.GetDouble(2),
+            Threshold = reader.GetDouble(3),
+            TimestampUtc = reader.GetString(4)
+        });
+    }
+    return Results.Ok(list);
+});
+
 app.Run();
 
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
 
-
+class MonitorHub : Hub { }

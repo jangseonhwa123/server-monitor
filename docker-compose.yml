@@ -1,0 +1,33 @@
+﻿services:
+  server:
+    build: ./src/Server
+    ports:
+      - "5000:5000"
+    environment:
+      MONITOR_API_KEY: ${MONITOR_API_KEY:-dev-secret-key}
+    volumes:
+      - monitor-data:/data
+    restart: unless-stopped
+
+  agent-pc01:
+    build: ./src/Agent
+    command: ["pc-01", "sim"]
+    environment:
+      MONITOR_SERVER_URL: http://server:5000/api/metrics
+      MONITOR_API_KEY: ${MONITOR_API_KEY:-dev-secret-key}
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  agent-pc02:
+    build: ./src/Agent
+    command: ["pc-02", "sim"]
+    environment:
+      MONITOR_SERVER_URL: http://server:5000/api/metrics
+      MONITOR_API_KEY: ${MONITOR_API_KEY:-dev-secret-key}
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  monitor-data:

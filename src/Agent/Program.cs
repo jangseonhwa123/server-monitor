@@ -6,13 +6,13 @@ using System.Net.Http.Json;
 // API 키는 환경 변수 MONITOR_API_KEY 로 지정합니다 (없으면 개발용 기본 키 사용)
 var deviceName = args.Length > 0 ? args[0] : Environment.MachineName;
 var simulate = args.Length > 1 && args[1] == "sim";
-var serverUrl = "http://localhost:5000/api/metrics";
+var serverUrl = Environment.GetEnvironmentVariable("MONITOR_SERVER_URL") ?? "http://127.0.0.1:5000/api/metrics";
 var apiKey = Environment.GetEnvironmentVariable("MONITOR_API_KEY") ?? "dev-secret-key";
 
 const int MaxPending = 3600; // 서버가 꺼져 있을 때 최대 1시간치 보관
 
-var cpu = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-var mem = new PerformanceCounter("Memory", "% Committed Bytes In Use");
+var cpu = simulate ? null : new PerformanceCounter("Processor", "% Processor Time", "_Total");
+var mem = simulate ? null : new PerformanceCounter("Memory", "% Committed Bytes In Use");
 
 using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
 http.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
@@ -62,7 +62,7 @@ _ = Task.Run(async () =>
 
 // 수집 흐름: 서버 상태와 상관없이 1초마다 측정합니다
 double simCpu = 40, simMem = 60;
-cpu.NextValue(); // 첫 호출은 항상 0이라 버립니다
+cpu?.NextValue(); // 첫 호출은 항상 0이라 버립니다
 Console.WriteLine($"장비 이름: {deviceName} / 모드: {(simulate ? "시뮬레이션" : "실제 측정")}");
 
 while (true)
@@ -91,3 +91,7 @@ while (true)
 }
 
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
+
+
+
+

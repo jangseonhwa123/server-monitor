@@ -17,7 +17,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        var vm = new MainViewModel(new MonitorClient("http://localhost:5000"));
+        var vm = new MainViewModel(new MonitorClient("http://127.0.0.1:5000"));
         vm.GraphInvalidated += DrawGraph;
         _vm = vm;
         DataContext = vm;
@@ -74,3 +74,4 @@ public partial class MainWindow : Window
         GraphCanvas.Children.Add(new Polyline { Points = cpuPoints, Stroke = Brushes.SteelBlue, StrokeThickness = 2 });
     }
 }
+

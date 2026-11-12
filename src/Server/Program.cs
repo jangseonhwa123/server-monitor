@@ -5,6 +5,7 @@ const double CpuThreshold = 80.0;
 const int AlertCooldownSeconds = 60;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 builder.Services.AddSignalR();
 var app = builder.Build();
 
@@ -65,15 +66,10 @@ app.MapGet("/", () => "Server Monitor is running");
 
 app.MapPost("/api/metrics", async (MetricDto metric, IHubContext<MonitorHub> hub) =>
 {
-    using var conn = OpenDb();
-
-    var insert = conn.CreateCommand();
-    insert.CommandText = "INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) VALUES ($d, $c, $m, $t)";
-    insert.Parameters.AddWithValue("$d", metric.DeviceName);
-    insert.Parameters.AddWithValue("$c", metric.Cpu);
-    insert.Parameters.AddWithValue("$m", metric.Memory);
-    insert.Parameters.AddWithValue("$t", metric.Timestamp.ToString("o"));
-    insert.ExecuteNonQuery();
+    if (!MetricQueue.Enqueue(metric, OpenDb))
+    {
+        return Results.StatusCode(503);
+    }
 
     // 연결된 모든 관제 화면에 즉시 전달
     await hub.Clients.All.SendAsync("MetricReceived", metric);
@@ -81,6 +77,7 @@ app.MapPost("/api/metrics", async (MetricDto metric, IHubContext<MonitorHub> hub
     // CPU 임계값 초과 시 알람 기록 (같은 장비는 60초에 한 번만)
     if (metric.Cpu >= CpuThreshold)
     {
+        using var conn = OpenDb();
         var check = conn.CreateCommand();
         check.CommandText = "SELECT COUNT(*) FROM Alerts WHERE DeviceName = $d AND Type = 'CPU' AND Timestamp > $since";
         check.Parameters.AddWithValue("$d", metric.DeviceName);
@@ -216,3 +213,5 @@ app.Run();
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
 
 class MonitorHub : Hub { }
+
+

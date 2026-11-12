@@ -5,6 +5,7 @@
       - "5000:5000"
     environment:
       MONITOR_API_KEY: ${MONITOR_API_KEY:-dev-secret-key}
+      Logging__LogLevel__Default: ${LOG_LEVEL:-Information}
     volumes:
       - monitor-data:/data
     restart: unless-stopped

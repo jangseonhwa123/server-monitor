@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Agent/Agent.csproj" />
     <Project Path="src/Dashboard/Dashboard.csproj" />
+    <Project Path="src/LoadTest/LoadTest.csproj" />
     <Project Path="src/Server/Server.csproj" />
   </Folder>
 </Solution>

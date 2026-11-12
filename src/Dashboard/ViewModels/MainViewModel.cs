@@ -25,6 +25,27 @@ public class MainViewModel : ViewModelBase
     public ObservableCollection<AlertRow> Alerts { get; } = new();
     public List<HistoryDto> History { get; private set; } = new();
 
+    public ObservableCollection<TopItem> TopCpu { get; } = new();
+    public ObservableCollection<TopItem> TopMemory { get; } = new();
+
+    private int _okCount, _warnCount, _offlineCount;
+    private string _alertCountText = "0", _latestAlertText = "발생한 알람이 없습니다", _alertTopText = "";
+    private string _selectedTitle = "선택 장비", _currentCpuText = "-", _currentMemoryText = "-", _avgCpuText = "-", _maxCpuText = "-";
+    private bool _isConnected;
+
+    public int OkCount { get => _okCount; private set => SetProperty(ref _okCount, value); }
+    public int WarnCount { get => _warnCount; private set => SetProperty(ref _warnCount, value); }
+    public int OfflineCount { get => _offlineCount; private set => SetProperty(ref _offlineCount, value); }
+    public string AlertCountText { get => _alertCountText; private set => SetProperty(ref _alertCountText, value); }
+    public string LatestAlertText { get => _latestAlertText; private set => SetProperty(ref _latestAlertText, value); }
+    public string AlertTopText { get => _alertTopText; private set => SetProperty(ref _alertTopText, value); }
+    public string SelectedTitle { get => _selectedTitle; private set => SetProperty(ref _selectedTitle, value); }
+    public string CurrentCpuText { get => _currentCpuText; private set => SetProperty(ref _currentCpuText, value); }
+    public string CurrentMemoryText { get => _currentMemoryText; private set => SetProperty(ref _currentMemoryText, value); }
+    public string AvgCpuText { get => _avgCpuText; private set => SetProperty(ref _avgCpuText, value); }
+    public string MaxCpuText { get => _maxCpuText; private set => SetProperty(ref _maxCpuText, value); }
+    public bool IsConnected { get => _isConnected; private set => SetProperty(ref _isConnected, value); }
+
     public event Action? GraphInvalidated;
 
     public MainViewModel(MonitorClient client)
@@ -70,10 +91,12 @@ public class MainViewModel : ViewModelBase
         var now = DateTimeOffset.Now;
         foreach (var row in Devices) row.RefreshStatus(now);
         UpdateStatusText();
+        RefreshSummary();
     }
 
     private void UpdateStatusText()
     {
+        IsConnected = _client.State == ConnectionState.Connected;
         var connection = _client.State switch
         {
             ConnectionState.Connected => _snapshotError
@@ -127,6 +150,7 @@ public class MainViewModel : ViewModelBase
         }
 
         UpdateStatusText();
+        RefreshSummary();
     }
 
     private async Task LoadHistoryAsync()
@@ -185,6 +209,7 @@ public class MainViewModel : ViewModelBase
     {
         Alerts.Insert(0, ToAlertRow(a));
         while (Alerts.Count > MaxAlerts) Alerts.RemoveAt(Alerts.Count - 1);
+        RefreshSummary();
     }
 
     private static AlertRow ToAlertRow(AlertDto a) => new(
@@ -197,6 +222,56 @@ public class MainViewModel : ViewModelBase
     private void NotifyGraph()
     {
         OnPropertyChanged(nameof(GraphTitle));
+        UpdateKpis();
         GraphInvalidated?.Invoke();
+    }
+
+    // 상단 위젯(상태 개수, Top 5, 알람 요약)과 선택 장비 KPI를 다시 계산합니다
+    private void RefreshSummary()
+    {
+        int ok = 0, warn = 0, off = 0;
+        foreach (var d in Devices)
+        {
+            if (d.Status == "정상") ok++;
+            else if (d.Status == "경고") warn++;
+            else off++;
+        }
+        OkCount = ok;
+        WarnCount = warn;
+        OfflineCount = off;
+
+        var online = Devices.Where(d => d.Status != "오프라인").ToList();
+        Replace(TopCpu, online.OrderByDescending(d => d.Cpu).Take(5).Select(d => new TopItem(d.DeviceName, d.Cpu, d.Cpu >= 80)));
+        Replace(TopMemory, online.OrderByDescending(d => d.Memory).Take(5).Select(d => new TopItem(d.DeviceName, d.Memory, false)));
+
+        AlertCountText = Alerts.Count.ToString();
+        LatestAlertText = Alerts.Count > 0
+            ? $"가장 최근: {Alerts[0].DeviceName} · {Alerts[0].Time}"
+            : "발생한 알람이 없습니다";
+        AlertTopText = string.Join(Environment.NewLine,
+            Alerts.GroupBy(a => a.DeviceName)
+                  .OrderByDescending(g => g.Count())
+                  .Take(2)
+                  .Select(g => $"{g.Key} · {g.Count()}건"));
+
+        UpdateKpis();
+        GraphInvalidated?.Invoke();
+    }
+
+    private void UpdateKpis()
+    {
+        var device = SelectedDevice;
+        SelectedTitle = device == null ? "선택 장비" : $"선택 장비 · {device.DeviceName}";
+        CurrentCpuText = device == null ? "-" : $"{device.Cpu:F1}%";
+        CurrentMemoryText = device == null ? "-" : $"{device.Memory:F1}%";
+        AvgCpuText = History.Count > 0 ? $"{History.Average(h => h.Cpu):F1}%" : "-";
+        MaxCpuText = History.Count > 0 ? $"{History.Max(h => h.Cpu):F1}%" : "-";
+    }
+
+    private static void Replace<T>(ObservableCollection<T> target, IEnumerable<T> items)
+    {
+        var list = items.ToList();
+        target.Clear();
+        foreach (var item in list) target.Add(item);
     }
 }

@@ -12,11 +12,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="StatusText" Grid.Row="0" Margin="0,0,0,8" FontSize="14" Text="연결 중..."/>
+        <TextBlock Grid.Row="0" Margin="0,0,0,8" FontSize="14" Text="{Binding StatusText}"/>
 
-        <DataGrid x:Name="DeviceGrid" Grid.Row="1" AutoGenerateColumns="False"
-                  IsReadOnly="True" CanUserAddRows="False" SelectionMode="Single"
-                  SelectionChanged="DeviceGrid_SelectionChanged">
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" SelectionMode="Single"
+                  ItemsSource="{Binding Devices}"
+                  SelectedItem="{Binding SelectedDevice, Mode=TwoWay}">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -39,8 +40,8 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TextBlock x:Name="GraphTitle" Grid.Row="2" Margin="0,12,0,4" FontSize="14" FontWeight="Bold"
-                   Text="장비를 선택하면 그래프가 표시됩니다"/>
+        <TextBlock Grid.Row="2" Margin="0,12,0,4" FontSize="14" FontWeight="Bold"
+                   Text="{Binding GraphTitle}"/>
 
         <Border Grid.Row="3" BorderBrush="#FF999999" BorderThickness="1" Background="White">
             <Canvas x:Name="GraphCanvas" ClipToBounds="True" SizeChanged="GraphCanvas_SizeChanged"/>
@@ -48,10 +49,10 @@
 
         <TextBlock Grid.Row="4" Margin="0,12,0,4" FontSize="14" FontWeight="Bold" Text="최근 알람"/>
 
-        <DataGrid x:Name="AlertGrid" Grid.Row="5" AutoGenerateColumns="False"
-                  IsReadOnly="True" CanUserAddRows="False">
+        <DataGrid Grid.Row="5" AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" ItemsSource="{Binding Alerts}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="시각" Binding="{Binding Time}" Width="120"/>
+                <DataGridTextColumn Header="시각" Binding="{Binding Time}" Width="150"/>
                 <DataGridTextColumn Header="장비" Binding="{Binding DeviceName}" Width="*"/>
                 <DataGridTextColumn Header="종류" Binding="{Binding Type}" Width="80"/>
                 <DataGridTextColumn Header="값 (%)" Binding="{Binding Value, StringFormat=F1}" Width="100"/>

@@ -6,21 +6,43 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Test
+        run: dotnet test tests/Server.Tests -c Release
+
+  build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Build
+      - name: Build (WPF dashboard included)
         run: dotnet build serverMonitor.slnx -c Release
-      - name: Test
-        run: dotnet test tests/Server.Tests -c Release --no-build
 
-  docker-build:
+  docker-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build images
-        run: docker compose build
+      - name: Start the whole stack
+        run: docker compose up -d --build --wait
+      - name: Wait until simulated agents have reported
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:5000/api/devices | grep -q pc-01; then
+              echo "stack is up and data is flowing"
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

@@ -1,91 +1,83 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using MySqlConnector;
 using Xunit;
 
 namespace Server.Tests;
 
-public class RetentionTests : IDisposable
+[Collection("api")]
+public class RetentionTests
 {
-    private readonly string _path = Path.Combine(Path.GetTempPath(), "retention-" + Guid.NewGuid().ToString("N") + ".db");
+    private readonly ApiFactory _factory;
 
-    public RetentionTests()
-    {
-        using var conn = Open();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = """
-            CREATE TABLE Metrics (Id INTEGER PRIMARY KEY AUTOINCREMENT, DeviceName TEXT, Cpu REAL, Memory REAL, Timestamp TEXT);
-            CREATE TABLE Alerts (Id INTEGER PRIMARY KEY AUTOINCREMENT, DeviceName TEXT, Type TEXT, Value REAL, Threshold REAL, Timestamp TEXT);
-            """;
-        cmd.ExecuteNonQuery();
-    }
+    public RetentionTests(ApiFactory factory) => _factory = factory;
 
-    private SqliteConnection Open()
+    // 서버를 한 번 띄워서 테이블이 만들어진 뒤에 연결합니다
+    private async Task<MySqlConnection> OpenAsync()
     {
-        var conn = new SqliteConnection($"Data Source={_path};Pooling=False");
-        conn.Open();
+        _factory.CreateClient();
+        var cs = new MySqlConnectionStringBuilder(_factory.ConnectionString) { DateTimeKind = MySqlDateTimeKind.Utc }.ConnectionString;
+        var conn = new MySqlConnection(cs);
+        await conn.OpenAsync();
         return conn;
     }
 
-    private void InsertMetric(string timestamp)
+    private static async Task ExecAsync(MySqlConnection conn, string sql, params (string Name, object Value)[] args)
     {
-        using var conn = Open();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) VALUES ('d', 1, 1, $t)";
-        cmd.Parameters.AddWithValue("$t", timestamp);
-        cmd.ExecuteNonQuery();
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        foreach (var (name, value) in args) cmd.Parameters.AddWithValue(name, value);
+        await cmd.ExecuteNonQueryAsync();
     }
 
-    private void InsertAlert(string timestamp)
+    private static async Task<long> CountAsync(MySqlConnection conn, string table, string device)
     {
-        using var conn = Open();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "INSERT INTO Alerts (DeviceName, Type, Value, Threshold, Timestamp) VALUES ('d', 'CPU', 90, 80, $t)";
-        cmd.Parameters.AddWithValue("$t", timestamp);
-        cmd.ExecuteNonQuery();
-    }
-
-    private long Count(string table)
-    {
-        using var conn = Open();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = $"SELECT COUNT(*) FROM {table}";
-        return (long)cmd.ExecuteScalar()!;
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText = $"SELECT COUNT(*) FROM {table} WHERE DeviceName = @d";
+        cmd.Parameters.AddWithValue("@d", device);
+        return Convert.ToInt64(await cmd.ExecuteScalarAsync());
     }
 
     [Fact]
-    public void Purge_deletes_only_rows_older_than_cutoff_regardless_of_timezone_format()
+    public async Task Purge_deletes_only_rows_older_than_cutoff()
     {
+        await using var conn = await OpenAsync();
         var now = DateTime.UtcNow;
-        var kst = TimeSpan.FromHours(9);
 
-        // 지표: 오래된 것 2건(UTC 표기, +09:00 표기), 최근 것 2건(UTC 표기, +09:00 표기)
-        InsertMetric(now.AddDays(-10).ToString("o"));
-        InsertMetric(new DateTimeOffset(now.AddDays(-10)).ToOffset(kst).ToString("o"));
-        InsertMetric(now.AddHours(-1).ToString("o"));
-        InsertMetric(new DateTimeOffset(now.AddHours(-1)).ToOffset(kst).ToString("o"));
+        const string insertMetric = "INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) VALUES (@d, 1, 1, @t)";
+        await ExecAsync(conn, insertMetric, ("@d", "ret-old"), ("@t", now.AddDays(-10)));
+        await ExecAsync(conn, insertMetric, ("@d", "ret-new"), ("@t", now.AddHours(-1)));
 
-        // 알람: 오래된 것 1건, 최근 것 1건
-        InsertAlert(now.AddDays(-10).ToString("o"));
-        InsertAlert(now.AddHours(-1).ToString("o"));
+        const string insertAlert = "INSERT INTO Alerts (DeviceName, Type, Value, Threshold, Timestamp) VALUES (@d, 'CPU', 90, 80, @t)";
+        await ExecAsync(conn, insertAlert, ("@d", "ret-old"), ("@t", now.AddDays(-10)));
+        await ExecAsync(conn, insertAlert, ("@d", "ret-new"), ("@t", now.AddHours(-1)));
 
-        var (metrics, alerts) = RetentionJob.Purge(Open, now.AddDays(-7));
+        var (metrics, alerts) = await RetentionJob.PurgeAsync(OpenAsync, now.AddDays(-7));
 
-        Assert.Equal(2, metrics);
-        Assert.Equal(1, alerts);
-        Assert.Equal(2, Count("Metrics"));
-        Assert.Equal(1, Count("Alerts"));
+        Assert.True(metrics >= 1);
+        Assert.True(alerts >= 1);
+        Assert.Equal(0, await CountAsync(conn, "Metrics", "ret-old"));
+        Assert.Equal(1, await CountAsync(conn, "Metrics", "ret-new"));
+        Assert.Equal(0, await CountAsync(conn, "Alerts", "ret-old"));
+        Assert.Equal(1, await CountAsync(conn, "Alerts", "ret-new"));
     }
 
     [Fact]
-    public void Purge_on_empty_tables_deletes_nothing()
+    public async Task Purge_removes_more_rows_than_a_single_batch()
     {
-        var (metrics, alerts) = RetentionJob.Purge(Open, DateTime.UtcNow);
+        await using var conn = await OpenAsync();
+        var old = DateTime.UtcNow.AddDays(-30);
 
-        Assert.Equal(0, metrics);
-        Assert.Equal(0, alerts);
-    }
+        // 한 번에 지우는 단위(1만 건)를 넘는 행을 만들어 반복 삭제가 동작하는지 확인합니다
+        await ExecAsync(conn, "SET SESSION cte_max_recursion_depth = 20000");
+        await ExecAsync(conn,
+            "INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) " +
+            "WITH RECURSIVE seq AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM seq WHERE n < 10500) " +
+            "SELECT 'ret-bulk', 1, 1, @t FROM seq",
+            ("@t", old));
+        Assert.Equal(10500, await CountAsync(conn, "Metrics", "ret-bulk"));
 
-    public void Dispose()
-    {
-        try { File.Delete(_path); } catch { }
+        var (metrics, _) = await RetentionJob.PurgeAsync(OpenAsync, DateTime.UtcNow.AddDays(-7));
+
+        Assert.True(metrics >= 10500);
+        Assert.Equal(0, await CountAsync(conn, "Metrics", "ret-bulk"));
     }
 }

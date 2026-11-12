@@ -1,11 +1,13 @@
-﻿using System.Threading.Channels;
-using Microsoft.Data.Sqlite;
+﻿using System.Text;
+using System.Threading.Channels;
+using MySqlConnector;
 
 // 요청 스레드는 큐에 넣기만 하고, 전담 쓰기 작업 하나가 모아서 한 번에 저장합니다
 internal static class MetricQueue
 {
     private const int Capacity = 100_000;
     private const int MaxBatch = 1000;
+    private const int RowsPerStatement = 500;
 
     private static readonly Channel<MetricDto> Queue =
         Channel.CreateBounded<MetricDto>(new BoundedChannelOptions(Capacity)
@@ -17,7 +19,7 @@ internal static class MetricQueue
     private static int _started;
 
     // 큐가 가득 차면 false (호출 쪽이 503을 돌려주면 에이전트가 버퍼에 보관했다가 재전송합니다)
-    public static bool Enqueue(MetricDto metric, Func<SqliteConnection> openDb)
+    public static bool Enqueue(MetricDto metric, Func<Task<MySqlConnection>> openDb)
     {
         if (Interlocked.Exchange(ref _started, 1) == 0)
         {
@@ -26,7 +28,7 @@ internal static class MetricQueue
         return Queue.Writer.TryWrite(metric);
     }
 
-    private static async Task WriteLoopAsync(Func<SqliteConnection> openDb)
+    private static async Task WriteLoopAsync(Func<Task<MySqlConnection>> openDb)
     {
         var reader = Queue.Reader;
         var batch = new List<MetricDto>(MaxBatch);
@@ -41,7 +43,7 @@ internal static class MetricQueue
 
             try
             {
-                InsertBatch(batch, openDb);
+                await InsertBatchAsync(batch, openDb);
             }
             catch (Exception ex)
             {
@@ -50,27 +52,33 @@ internal static class MetricQueue
         }
     }
 
-    private static void InsertBatch(List<MetricDto> batch, Func<SqliteConnection> openDb)
+    private static async Task InsertBatchAsync(List<MetricDto> batch, Func<Task<MySqlConnection>> openDb)
     {
-        using var conn = openDb();
-        using var tx = conn.BeginTransaction();
-        using var cmd = conn.CreateCommand();
-        cmd.Transaction = tx;
-        cmd.CommandText = "INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) VALUES ($d, $c, $m, $t)";
-        var pd = cmd.Parameters.Add("$d", SqliteType.Text);
-        var pc = cmd.Parameters.Add("$c", SqliteType.Real);
-        var pm = cmd.Parameters.Add("$m", SqliteType.Real);
-        var pt = cmd.Parameters.Add("$t", SqliteType.Text);
+        await using var conn = await openDb();
+        await using var tx = await conn.BeginTransactionAsync();
 
-        foreach (var m in batch)
+        for (var offset = 0; offset < batch.Count; offset += RowsPerStatement)
         {
-            pd.Value = m.DeviceName;
-            pc.Value = m.Cpu;
-            pm.Value = m.Memory;
-            pt.Value = m.Timestamp.ToString("o");
-            cmd.ExecuteNonQuery();
+            var count = Math.Min(RowsPerStatement, batch.Count - offset);
+            var sql = new StringBuilder("INSERT INTO Metrics (DeviceName, Cpu, Memory, Timestamp) VALUES ");
+            await using var cmd = conn.CreateCommand();
+            cmd.Transaction = tx;
+
+            for (var i = 0; i < count; i++)
+            {
+                var m = batch[offset + i];
+                if (i > 0) sql.Append(',');
+                sql.Append($"(@d{i},@c{i},@m{i},@t{i})");
+                cmd.Parameters.AddWithValue($"@d{i}", m.DeviceName);
+                cmd.Parameters.AddWithValue($"@c{i}", m.Cpu);
+                cmd.Parameters.AddWithValue($"@m{i}", m.Memory);
+                cmd.Parameters.AddWithValue($"@t{i}", m.Timestamp.ToUniversalTime());
+            }
+
+            cmd.CommandText = sql.ToString();
+            await cmd.ExecuteNonQueryAsync();
         }
 
-        tx.Commit();
+        await tx.CommitAsync();
     }
 }

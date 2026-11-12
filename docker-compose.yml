@@ -1,13 +1,33 @@
 ﻿services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: monitor
+      MYSQL_USER: monitor
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-monitorpass}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+
   server:
     build: ./src/Server
     ports:
       - "5000:5000"
     environment:
       MONITOR_API_KEY: ${MONITOR_API_KEY:-dev-secret-key}
-      Logging__LogLevel__Default: ${LOG_LEVEL:-Information}
-    volumes:
-      - monitor-data:/data
+      ConnectionStrings__Default: "Server=db;Port=3306;Database=monitor;User ID=monitor;Password=${MYSQL_PASSWORD:-monitorpass}"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   agent-pc01:
@@ -31,4 +51,4 @@
     restart: unless-stopped
 
 volumes:
-  monitor-data:
+  mysql-data:

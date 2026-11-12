@@ -1,5 +1,7 @@
 ﻿# Server Monitor
 
+![CI](https://github.com/jangseonhwa123/server-monitor/actions/workflows/ci.yml/badge.svg)
+
 여러 PC·서버의 CPU/메모리 상태를 수집해 실시간으로 보여주고, 임계치를 넘으면 알람을 남기는 모니터링 플랫폼입니다.
 에이전트가 지표를 수집해 서버로 보내고, 서버는 DB에 저장하면서 SignalR로 관제 화면에 즉시 밀어줍니다.
 
@@ -99,7 +101,7 @@ dotnet run -c Release --project src/LoadTest -- --agents 1000 --duration 20 --ur
 
 | 단계 | 가설 | 결과 |
 |---|---|---|
-| WAL 모드 + `synchronous=NORMAL` | 쓰기마다 디스크 동기화하는 것이 병목 | 처리량 변화 없음 (100대에서 20건/초 유지). 가설 기각 |
+| WAL 모드 + `synchronous=NORMAL` (시도) | 쓰기마다 디스크 동기화가 병목 | 판단 불가로 결과에서 제외. 당시 측정이 Docker Desktop 경유라 편차가 컸고, 변경이 코드에 반영되었는지도 확인하지 못했습니다 |
 | 요청마다 개별 INSERT를 큐 + 단일 쓰기 작업 + 배치 트랜잭션으로 변경 | 동기 DB 쓰기가 스레드를 막아 스레드 풀이 고갈됨 | 1000대에서 0건/초(전부 실패)가 1,000건/초(실패 0)로 개선 |
 | ASP.NET Core 요청 로그를 Warning으로 변경 | 요청당 6줄의 콘솔 로그가 초당 약 1,000건에서 천장이 됨 | 2000대 884건/초가 1,999건/초로, 5000대 904건/초(실패 4,662)가 4,995건/초(실패 0)로 개선 |
 

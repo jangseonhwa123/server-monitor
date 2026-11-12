@@ -9,7 +9,7 @@ builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 builder.Services.AddSignalR();
 var app = builder.Build();
 
-var dbPath = Path.Combine(builder.Environment.ContentRootPath, "monitor.db");
+var dbPath = builder.Configuration["MONITOR_DB_PATH"] ?? Path.Combine(builder.Environment.ContentRootPath, "monitor.db");
 var connectionString = $"Data Source={dbPath}";
 
 SqliteConnection OpenDb()
@@ -213,5 +213,6 @@ app.Run();
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
 
 class MonitorHub : Hub { }
+
 
 

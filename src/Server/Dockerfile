@@ -6,8 +6,9 @@ COPY . .
 RUN dotnet publish -c Release -o /out --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
-WORKDIR /data
 COPY --from=build /out /app
 ENV ASPNETCORE_URLS=http://+:5000
+WORKDIR /app
 EXPOSE 5000
 ENTRYPOINT ["dotnet", "/app/Server.dll"]
+

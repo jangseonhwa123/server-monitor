@@ -1,0 +1,289 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Server Monitor</title>
+<style>
+:root{--white:#fff;--mint:#F1FEEC;--sage:#FFFFFF;--dust:#E6E6E6;--lilac:#AC92A6;--ink:#000000;--sub:#525252;--cpu:#E896D9;--mem:#FEDBBE;--ok:#99D586;--warn:#F29797;--bad:#FF7066;--off:#a59fa8;--r:10px;--gap:11px;--shadow:0 2px 8px #00000014}
+*{box-sizing:border-box}
+body{margin:0;background:var(--mint);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Segoe UI",system-ui,sans-serif;font-size:13px;line-height:1.45}
+.topbar{height:52px;background:var(--white);border-bottom:1px solid var(--dust);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:var(--gap);font-weight:700;font-size:16px;letter-spacing:-.2px}
+.logo i{width:22px;height:22px;border-radius:6px;background:var(--lilac);display:inline-block}
+.logo small{font-weight:400;color:var(--sub);font-size:12px;margin-left:4px}
+.right{display:flex;align-items:center;gap:12px;color:var(--sub)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:99px;background:var(--mint);border:1px solid var(--dust);font-size:12px;color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--off);display:inline-block;flex:none}
+.pill.live{color:var(--ink)}.pill.live .dot{background:var(--ok);box-shadow:0 0 0 3px #99D58666}
+.pill.retry .dot{background:var(--warn)}.pill.off .dot{background:var(--bad)}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 52px)}
+.side{background:var(--sage);border-right:1px solid var(--dust);padding:12px}
+.side h3{margin:2px 0 8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.side h3 span{color:var(--sub);font-weight:400}
+#q{width:100%;padding:8px 10px;border:1px solid var(--dust);border-radius:8px;background:var(--white);color:var(--ink);font:inherit;margin-bottom:8px}
+#q:focus{outline:2px solid var(--lilac);outline-offset:0}
+.item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.item:hover{background:var(--mint)}
+.item.sel{background:var(--white);border-color:var(--lilac)}
+.item .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.item .p{color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums}
+.item.offline .n,.item.offline .p{opacity:.5}
+.st-ok{background:var(--ok)}.st-warn{background:var(--warn)}.st-offline{background:var(--off)}
+main{padding:12px;display:grid;gap:var(--gap);align-content:start;min-width:0}
+.row4{display:grid;grid-template-columns:1fr 1.2fr 1.2fr 1fr;gap:var(--gap)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.row2b{display:grid;grid-template-columns:1.25fr 1fr;gap:var(--gap)}
+.card{background:var(--white);border:1px solid var(--dust);border-radius:var(--r);box-shadow:var(--shadow);min-width:0}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--dust);font-weight:700}
+.ch b{display:flex;align-items:center;font-weight:700}
+.ch b::before{content:"";width:4px;height:14px;background:var(--lilac);border-radius:2px;margin-right:8px}
+.ch small{color:var(--sub);font-weight:400;font-size:12px}
+.cb{padding:12px 14px}
+.empty{color:var(--sub);text-align:center;padding:22px 0}
+.donut{display:flex;align-items:center;gap:14px}
+.lg div{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--sub)}
+.lg b{color:var(--ink);margin-left:auto;padding-left:14px;font-variant-numeric:tabular-nums}
+.topn .t{display:grid;grid-template-columns:84px 1fr 46px;gap:8px;align-items:center;margin:7px 0}
+.topn .t span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.topn .t span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:10px;background:var(--dust);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .3s}
+.big{font-size:34px;font-weight:700;letter-spacing:-1px;line-height:1.1}
+.big small{font-size:13px;font-weight:400;color:var(--sub);margin-left:4px;letter-spacing:0}
+.sub{color:var(--sub);font-size:12px;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+.kpi{background:var(--mint);border:1px solid var(--dust);border-radius:8px;padding:10px 12px}
+.kpi .l{color:var(--sub);font-size:12px}
+.kpi .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+svg{display:block;width:100%;height:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;color:var(--sub);text-align:left;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--dust);background:#f8fbf6}
+td{padding:9px 10px;border-bottom:1px solid #eef3ea;font-variant-numeric:tabular-nums}
+tr.r{cursor:pointer}tr.r:hover td{background:#f8fbf6}tr.r.sel td{background:#f3eef2}
+tr.offline td:not(:first-child){opacity:.55}
+td.num,th.num{text-align:right}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.badge.ok{background:color-mix(in srgb,var(--ok) 45%,#fff);color:var(--ink)}
+.badge.warn{background:color-mix(in srgb,var(--warn) 45%,#fff);color:var(--ink)}
+.badge.offline{background:#ece8ee;color:var(--sub)}
+.tag{display:inline-block;padding:1px 8px;border-radius:6px;background:color-mix(in srgb,var(--bad) 35%,#fff);color:var(--ink);font-size:12px;font-weight:600}
+.mini{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.mini .bar{width:70px;height:7px}
+.scroll{max-height:290px;overflow:auto}
+@media(max-width:1180px){.row4{grid-template-columns:1fr 1fr}.row2b{grid-template-columns:1fr}}
+@media(max-width:800px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--dust)}.row4,.row2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.logo small{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo"><i></i>Server Monitor<small>장비 CPU·메모리 실시간 관제</small></div>
+  <div class="right"><span id="clock"></span><span id="conn" class="pill"><i class="dot"></i><span>연결 중…</span></span></div>
+</div>
+<div class="app">
+  <aside class="side">
+    <h3>장비 목록 <span id="side-count"></span></h3>
+    <input id="q" type="search" placeholder="장비 이름 검색" aria-label="장비 이름 검색">
+    <div id="side-list"></div>
+  </aside>
+  <main>
+    <section class="row4">
+      <div class="card"><div class="ch"><b>장비 상태 요약</b></div><div class="cb" id="w-state"></div></div>
+      <div class="card"><div class="ch"><b>CPU 사용률 Top 5</b><small>%</small></div><div class="cb topn" id="w-cpu"></div></div>
+      <div class="card"><div class="ch"><b>메모리 사용률 Top 5</b><small>%</small></div><div class="cb topn" id="w-mem"></div></div>
+      <div class="card"><div class="ch"><b>알람 현황</b><small>최근 20건 기준</small></div><div class="cb" id="w-alert"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="ch"><b id="sel-title">선택 장비</b><small>최근 60초 기준</small></div>
+      <div class="cb"><div class="kpis" id="kpis"></div></div>
+    </section>
+
+    <section class="row2">
+      <div class="card"><div class="ch"><b>CPU 추이</b><small>점선: 경고 80%</small></div><div class="cb" id="c-cpu"></div></div>
+      <div class="card"><div class="ch"><b>메모리 추이</b><small>최근 60초</small></div><div class="cb" id="c-mem"></div></div>
+    </section>
+
+    <section class="row2b">
+      <div class="card"><div class="ch"><b>장비 상세</b><small>행을 클릭하면 위 그래프가 바뀝니다</small></div><div class="scroll" id="t-dev"></div></div>
+      <div class="card"><div class="ch"><b>알람 이력</b><small id="alert-count"></small></div><div class="scroll" id="t-alert"></div></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const OFFLINE_MS = 10000, WARN = 80, HISTORY = 60;
+const C = {cpu:'#E896D9', mem:'#FEDBBE', lilac:'#AC92A6', dust:'#E6E6E6', ok:'#99D586', warn:'#F29797', bad:'#FF7066', off:'#a59fa8', grid:'#E6E6E6', sub:'#525252'};
+const devices = new Map(), history = new Map();
+let alerts = [], selected = null;
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick = (o, k) => { if (!o) return undefined; const key = Object.keys(o).find(x => x.toLowerCase() === k.toLowerCase()); return key === undefined ? undefined : o[key]; };
+const parseUtc = s => new Date(/(Z|[+-]\d\d:?\d\d)$/i.test(s) ? s : s + 'Z');
+const ago = d => { const s = Math.floor((Date.now() - d) / 1000); return s < 2 ? '방금' : s < 60 ? s + '초 전' : Math.floor(s / 60) + '분 전'; };
+const stamp = d => d.toLocaleString('ko-KR', {month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false});
+const pct = v => Math.max(0, Math.min(100, v));
+
+async function api(path) { const r = await fetch(path, {cache:'no-store'}); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function loadDevices() {
+  const list = await api('/api/devices');
+  devices.clear();
+  for (const d of list) devices.set(pick(d, 'deviceName'), {cpu:+pick(d, 'cpu'), memory:+pick(d, 'memory'), lastSeen:parseUtc(pick(d, 'lastSeen'))});
+  if (!selected || !devices.has(selected)) selected = [...devices.keys()].sort()[0] ?? null;
+}
+async function loadHistory(name) {
+  if (!name) return;
+  const data = await api('/api/devices/' + encodeURIComponent(name) + '/history?limit=' + HISTORY);
+  history.set(name, data.map(h => ({cpu:+pick(h, 'cpu'), memory:+pick(h, 'memory')})));
+}
+async function loadAlerts() {
+  const data = await api('/api/alerts?limit=20');
+  alerts = data.map(a => ({name:pick(a, 'deviceName'), value:+pick(a, 'value'), threshold:+pick(a, 'threshold'), at:parseUtc(pick(a, 'timestampUtc'))}));
+}
+async function refresh() {
+  try { await loadDevices(); await Promise.all([loadAlerts(), loadHistory(selected)]); } catch (e) { console.warn(e); }
+  render();
+}
+
+const statusOf = d => (Date.now() - d.lastSeen > OFFLINE_MS) ? 'offline' : (d.cpu >= WARN ? 'warn' : 'ok');
+const LABEL = {ok:'정상', warn:'경고', offline:'오프라인'};
+const bar = (v, color) => `<div class="bar"><i style="width:${pct(v)}%;background:${color}"></i></div>`;
+
+function donut(ok, warn, off) {
+  const total = ok + warn + off, r = 42, L = 2 * Math.PI * r;
+  let acc = 0;
+  const seg = (n, color) => { if (!n) return ''; const len = L * n / total; const s = `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${len} ${L - len}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`; acc += len; return s; };
+  const ring = total ? seg(ok, C.ok) + seg(warn, C.warn) + seg(off, C.off) : `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${C.grid}" stroke-width="16"/>`;
+  return `<svg viewBox="0 0 120 120" style="width:120px;flex:none" role="img" aria-label="장비 상태 비율">${ring}<text x="60" y="60" text-anchor="middle" font-size="24" font-weight="700" fill="#000000">${total}</text><text x="60" y="76" text-anchor="middle" font-size="10" fill="${C.sub}">전체 장비</text></svg>`;
+}
+
+function renderSide() {
+  const q = $('#q').value.trim().toLowerCase();
+  const names = [...devices.keys()].sort().filter(n => n.toLowerCase().includes(q));
+  $('#side-count').textContent = devices.size + '대';
+  $('#side-list').innerHTML = names.map(n => { const d = devices.get(n), st = statusOf(d);
+    return `<div class="item ${st} ${n === selected ? 'sel' : ''}" data-name="${esc(n)}"><i class="dot st-${st}"></i><span class="n" title="${esc(n)}">${esc(n)}</span><span class="p">${d.cpu.toFixed(0)}%</span></div>`; }).join('')
+    || '<div class="empty">장비가 없습니다</div>';
+}
+
+function renderWidgets() {
+  const all = [...devices.entries()];
+  const counts = {ok:0, warn:0, offline:0};
+  all.forEach(([, d]) => counts[statusOf(d)]++);
+  $('#w-state').innerHTML = `<div class="donut">${donut(counts.ok, counts.warn, counts.offline)}<div class="lg" style="flex:1">
+    <div><i class="dot st-ok"></i>정상<b>${counts.ok}</b></div>
+    <div><i class="dot st-warn"></i>경고 (CPU ${WARN}%↑)<b>${counts.warn}</b></div>
+    <div><i class="dot st-offline"></i>오프라인<b>${counts.offline}</b></div></div></div>`;
+  const online = all.filter(([, d]) => statusOf(d) !== 'offline');
+  const top = (key, color, warn) => {
+    const list = online.slice().sort((a, b) => b[1][key] - a[1][key]).slice(0, 5);
+    return list.length ? list.map(([n, d]) => `<div class="t"><span title="${esc(n)}">${esc(n)}</span>${bar(d[key], warn && d[key] >= WARN ? C.bad : color)}<span>${d[key].toFixed(1)}</span></div>`).join('') : '<div class="empty">데이터 없음</div>';
+  };
+  $('#w-cpu').innerHTML = top('cpu', C.lilac, true);
+  $('#w-mem').innerHTML = top('memory', C.mem, false);
+
+  const per = {};
+  alerts.forEach(a => per[a.name] = (per[a.name] || 0) + 1);
+  const rank = Object.entries(per).sort((a, b) => b[1] - a[1]).slice(0, 2);
+  $('#w-alert').innerHTML = `<div class="big">${alerts.length}<small>건</small></div>
+    <div class="sub">${alerts.length ? '가장 최근: ' + esc(alerts[0].name) + ' · ' + stamp(alerts[0].at) : '발생한 알람이 없습니다'}</div>
+    ${rank.map(([n, c]) => `<div class="sub">${esc(n)} · ${c}건</div>`).join('')}`;
+}
+
+function renderKpis() {
+  $('#sel-title').textContent = selected ? '선택 장비 · ' + selected : '선택 장비';
+  const d = selected && devices.get(selected), h = selected ? (history.get(selected) || []) : [];
+  if (!d) { $('#kpis').innerHTML = '<div class="empty" style="grid-column:1/-1">장비를 선택해 주세요</div>'; return; }
+  const avg = h.length ? h.reduce((s, p) => s + p.cpu, 0) / h.length : d.cpu;
+  const max = h.length ? Math.max(...h.map(p => p.cpu)) : d.cpu;
+  const k = (l, v) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`;
+  $('#kpis').innerHTML = k('현재 CPU', d.cpu.toFixed(1) + '%') + k('현재 메모리', d.memory.toFixed(1) + '%') + k('CPU 60초 평균', avg.toFixed(1) + '%') + k('CPU 60초 최대', max.toFixed(1) + '%');
+}
+
+function area(key, color, threshold) {
+  const pts = selected ? (history.get(selected) || []) : [];
+  if (!pts.length) return '<div class="empty">표시할 데이터가 없습니다.</div>';
+  const W = 560, H = 200, L = 34, R = 10, T = 10, B = 22, iw = W - L - R, ih = H - T - B, off = HISTORY - pts.length;
+  const x = i => L + (i + off) * iw / (HISTORY - 1), y = v => T + ih * (1 - pct(v) / 100);
+  const xy = pts.map((p, i) => x(i).toFixed(1) + ',' + y(p[key]).toFixed(1));
+  let grid = '';
+  for (const v of [0, 25, 50, 75, 100]) grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="${C.grid}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="${C.sub}">${v}</text>`;
+  const last = pts[pts.length - 1];
+  const th = threshold ? `<line x1="${L}" x2="${W - R}" y1="${y(WARN)}" y2="${y(WARN)}" stroke="${C.bad}" stroke-dasharray="5 4" stroke-width="1.2"/>` : '';
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${key} 최근 60초 그래프">${grid}${th}
+    <polygon points="${x(0).toFixed(1)},${y(0)} ${xy.join(' ')} ${x(pts.length - 1).toFixed(1)},${y(0)}" fill="${color}" fill-opacity=".16"/>
+    <polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${xy.join(' ')}"/>
+    <circle cx="${x(pts.length - 1)}" cy="${y(last[key])}" r="4" fill="${color}"/>
+    <text x="${L}" y="${H - 5}" font-size="10" fill="${C.sub}">60초 전</text>
+    <text x="${W - R}" y="${H - 5}" text-anchor="end" font-size="10" fill="${C.sub}">현재 ${last[key].toFixed(1)}%</text></svg>`;
+}
+
+function renderTables() {
+  const names = [...devices.keys()].sort();
+  $('#t-dev').innerHTML = names.length ? `<table><thead><tr><th>상태</th><th>장비</th><th class="num">CPU</th><th class="num">메모리</th><th class="num">마지막 수신</th></tr></thead><tbody>${names.map(n => { const d = devices.get(n), st = statusOf(d);
+    return `<tr class="r ${st} ${n === selected ? 'sel' : ''}" data-name="${esc(n)}"><td><span class="badge ${st}">${LABEL[st]}</span></td><td><b>${esc(n)}</b></td>
+      <td class="num"><div class="mini">${bar(d.cpu, d.cpu >= WARN ? C.bad : C.cpu)}<span>${d.cpu.toFixed(1)}%</span></div></td>
+      <td class="num"><div class="mini">${bar(d.memory, C.mem)}<span>${d.memory.toFixed(1)}%</span></div></td>
+      <td class="num">${ago(d.lastSeen)}</td></tr>`; }).join('')}</tbody></table>` : '<div class="empty">아직 수신된 장비가 없습니다. 에이전트를 실행해 주세요.</div>';
+  $('#alert-count').textContent = alerts.length ? '최근 ' + alerts.length + '건' : '';
+  $('#t-alert').innerHTML = alerts.length ? `<table><thead><tr><th>시각</th><th>장비</th><th>종류</th><th class="num">값 / 임계</th></tr></thead><tbody>${alerts.map(a =>
+    `<tr><td>${stamp(a.at)}</td><td><b>${esc(a.name)}</b></td><td><span class="tag">CPU</span></td><td class="num">${a.value.toFixed(1)}% / ${a.threshold}%</td></tr>`).join('')}</tbody></table>` : '<div class="empty">알람이 없습니다.</div>';
+}
+
+function render() {
+  renderSide(); renderWidgets(); renderKpis();
+  $('#c-cpu').innerHTML = area('cpu', C.cpu, true);
+  $('#c-mem').innerHTML = area('memory', C.mem, false);
+  renderTables();
+  $('#clock').textContent = new Date().toLocaleTimeString('ko-KR', {hour12:false});
+}
+let pending = false;
+const schedule = () => { if (pending) return; pending = true; setTimeout(() => { pending = false; render(); }, 250); };
+
+function onMetric(m) {
+  const name = pick(m, 'deviceName'), cpu = +pick(m, 'cpu'), memory = +pick(m, 'memory');
+  devices.set(name, {cpu, memory, lastSeen:new Date()});
+  const h = history.get(name) || [];
+  h.push({cpu, memory}); if (h.length > HISTORY) h.shift();
+  history.set(name, h);
+  if (!selected) selected = name;
+  schedule();
+}
+function onAlert(a) {
+  alerts.unshift({name:pick(a, 'deviceName'), value:+pick(a, 'value'), threshold:+pick(a, 'threshold'), at:parseUtc(pick(a, 'timestampUtc'))});
+  alerts = alerts.slice(0, 20);
+  schedule();
+}
+function setStatus(s) {
+  const el = $('#conn');
+  el.className = 'pill ' + s;
+  el.querySelector('span').textContent = {live:'실시간 연결됨', retry:'재연결 중…', off:'연결 끊김', poll:'폴링 모드 (2초)'}[s];
+}
+async function connect() {
+  if (typeof signalR === 'undefined') { setStatus('poll'); setInterval(refresh, 2000); return; }
+  const c = new signalR.HubConnectionBuilder().withUrl('/hub/monitor').withAutomaticReconnect([0, 1000, 2000, 5000, 10000]).build();
+  c.on('MetricReceived', onMetric);
+  c.on('AlertRaised', onAlert);
+  c.onreconnecting(() => setStatus('retry'));
+  c.onreconnected(async () => { setStatus('live'); await refresh(); });
+  c.onclose(() => { setStatus('off'); setTimeout(connect, 3000); });
+  try { await c.start(); setStatus('live'); } catch { setStatus('off'); setTimeout(connect, 3000); }
+}
+
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-name]');
+  if (!el) return;
+  selected = el.dataset.name;
+  render();
+  try { await loadHistory(selected); } catch (err) { console.warn(err); }
+  render();
+});
+$('#q').addEventListener('input', renderSide);
+setInterval(render, 1000);
+refresh().then(connect);
+</script>
+</body>
+</html>
+

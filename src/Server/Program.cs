@@ -99,9 +99,10 @@ app.Use(async (context, next) =>
 });
 
 // 실시간 푸시용 SignalR 허브
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.MapHub<MonitorHub>("/hub/monitor");
 
-app.MapGet("/", () => "Server Monitor is running");
 
 static int ClampLimit(int? limit, int fallback) => Math.Clamp(limit ?? fallback, 1, 1000);
 
@@ -262,3 +263,4 @@ app.Run();
 record MetricDto(string DeviceName, double Cpu, double Memory, DateTime Timestamp);
 
 class MonitorHub : Hub { }
+

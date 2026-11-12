@@ -40,12 +40,12 @@ public class ApiTests
     }
 
     [Fact]
-    public async Task Root_returns_running_message()
+    public async Task Root_serves_dashboard_page()
     {
         var response = await _factory.CreateClient().GetAsync("/");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("running", await response.Content.ReadAsStringAsync());
+        Assert.Contains("Server Monitor", await response.Content.ReadAsStringAsync());
     }
 
     [Fact]
@@ -114,4 +114,5 @@ public class ApiTests
         Assert.Equal(0, count);
     }
 }
+
 

@@ -5,7 +5,11 @@
 여러 PC·서버의 CPU/메모리 상태를 수집해 실시간으로 보여주고, 임계치를 넘으면 알람을 남기는 모니터링 플랫폼입니다.
 에이전트가 지표를 수집해 서버로 보내고, 서버는 MySQL에 저장하면서 SignalR로 관제 화면에 즉시 밀어줍니다.
 
+![web dashboard](docs/dashboard-web.png)
+*웹 대시보드: 서버가 직접 제공하며 브라우저로 접속합니다 (시뮬레이션 장비 6대)*
+
 ![dashboard](docs/dashboard.png)
+*WPF 관제 화면 (Windows)*
 
 ## 주요 기능
 
@@ -18,6 +22,7 @@
 - **알람**: CPU 80% 이상이면 알람 기록 (장비별 60초 쿨다운으로 중복 방지)
 - **데이터 보존 기간**: 오래된 지표와 알람을 주기적으로 삭제 (기본 7일, 1만 건씩 나눠 삭제해 DB를 오래 잠그지 않음)
 - **WPF 관제 화면**: 장비 목록(정상/경고/오프라인), 선택 장비의 최근 60초 그래프, 최근 알람 이력
+- **웹 대시보드**: 서버가 직접 제공(별도 설치 없음). 상태 요약, CPU/메모리 Top 5, 알람 현황, 최근 60초 그래프를 SignalR로 실시간 갱신
 
 ## 구조
 
@@ -29,6 +34,7 @@ Agent (수집) --HTTP POST + API Key--> Server (ASP.NET Core + MySQL) --SignalR 
 src/
   Agent/        지표 수집, 로컬 큐 버퍼링, 재전송
   Server/       Minimal API, SignalR Hub, MySQL 저장, 알람 판정, 쓰기 큐, 보존 기간 삭제
+    wwwroot/      웹 대시보드 (HTML 한 장, SignalR 클라이언트 포함)
   Dashboard/    WPF 관제 화면 (MVVM)
     Models/       서버와 주고받는 데이터 형식
     Services/     MonitorClient: REST 조회 + SignalR 수신 + 자동 재연결
@@ -41,7 +47,7 @@ tests/
 
 ## 기술 스택
 
-C# / .NET 10, ASP.NET Core Minimal API, SignalR, MySQL 8.4 (MySqlConnector), WPF (MVVM), Docker Compose, xUnit + Testcontainers, GitHub Actions
+C# / .NET 10, ASP.NET Core Minimal API, SignalR, MySQL 8.4 (MySqlConnector), WPF (MVVM), 웹 대시보드 (HTML/CSS/JS), Docker Compose, xUnit + Testcontainers, GitHub Actions
 
 ## 실행 방법
 
@@ -69,13 +75,15 @@ dotnet run --no-build --project src/Dashboard
 
 서버, 에이전트, 관제 화면은 각각 별도 터미널에서 실행합니다. 서버를 껐다 켜도 에이전트는 수집을 이어가고, 관제 화면은 자동으로 다시 연결됩니다.
 
+웹 대시보드는 서버가 실행 중이면 브라우저에서 `http://127.0.0.1:5000`으로 바로 열립니다 (별도 실행 불필요).
+
 ## Docker로 실행
 
 ```powershell
 docker compose up -d --build
 ```
 
-MySQL, 서버, 시뮬레이션 에이전트 2대(pc-01, pc-02)가 함께 뜹니다. DB가 준비된 뒤에 서버가 시작되도록 헬스체크로 순서를 맞췄고, 데이터는 볼륨(`mysql-data`)에 남습니다. 관제 화면은 윈도우에서 `dotnet run --no-build --project src/Dashboard`로 실행합니다. 컨테이너는 리눅스라 성능 카운터 실측은 불가능하고 시뮬레이션 모드만 동작합니다.
+MySQL, 서버, 시뮬레이션 에이전트 2대(pc-01, pc-02)가 함께 뜹니다. DB가 준비된 뒤에 서버가 시작되도록 헬스체크로 순서를 맞췄고, 데이터는 볼륨(`mysql-data`)에 남습니다. 웹 대시보드는 `http://127.0.0.1:5000`에서 바로 열리고, WPF 관제 화면은 윈도우에서 `dotnet run --no-build --project src/Dashboard`로 실행합니다. 컨테이너는 리눅스라 성능 카운터 실측은 불가능하고 시뮬레이션 모드만 동작합니다.
 
 ### 환경변수
 
@@ -99,6 +107,7 @@ MySQL 8.4에 `Metrics`, `Alerts` 두 테이블을 서버 시작 시 자동 생�
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
+| GET | / | 웹 대시보드 (서버가 제공하는 정적 HTML) |
 | POST | /api/metrics | 에이전트가 지표 전송 (`X-Api-Key` 필요, 잘못된 값은 400, 큐가 가득 차면 503) |
 | GET | /api/metrics?limit=10 | 최근 지표 조회 |
 | GET | /api/devices | 장비별 최신 상태 |
@@ -186,5 +195,6 @@ dotnet run -c Release --project src/LoadTest -- --agents 1000 --duration 20 --ur
 - [x] 입력 검증, 데이터 보존 기간 삭제
 - [x] SQLite에서 MySQL 8.4로 이전 (인덱스, 배치 INSERT, 비동기 쿼리)
 - [ ] AI 기반 이상 탐지
-- [ ] 웹 대시보드
+- [x] 웹 대시보드 (서버가 직접 제공하는 정적 페이지, SignalR 실시간 갱신)
+
 

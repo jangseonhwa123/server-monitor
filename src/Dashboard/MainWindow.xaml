@@ -42,7 +42,7 @@
 
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="23"/>
+            <Setter Property="FontSize" Value="20"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -215,7 +215,7 @@
                     <DockPanel DockPanel.Dock="Top" Margin="0,2,0,10">
                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}"
                                    Text="{Binding Devices.Count, StringFormat={}{0}대, Mode=OneWay}"/>
-                        <TextBlock Text="장비 목록" FontWeight="Bold" FontSize="23"/>
+                        <TextBlock Text="장비 목록" FontWeight="Bold" FontSize="20"/>
                     </DockPanel>
                     <ListBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
                              BorderThickness="0" Background="Transparent"
@@ -258,7 +258,7 @@
                             <StackPanel>
                                 <Border Style="{StaticResource CardHeader}">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                        <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                         <TextBlock Style="{StaticResource CardTitle}" Text="장비 상태 요약"/>
                                     </StackPanel>
                                 </Border>
@@ -298,7 +298,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="%"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="CPU 사용률 Top 5"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -338,7 +338,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="%"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="메모리 사용률 Top 5"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -369,7 +369,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 20건 기준"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="알람 현황"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -393,7 +393,7 @@
                                 <DockPanel>
                                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 60초 기준"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                        <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                         <TextBlock Style="{StaticResource CardTitle}" Text="{Binding SelectedTitle, Mode=OneWay}"/>
                                     </StackPanel>
                                 </DockPanel>
@@ -439,7 +439,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="점선: 경고 80%"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="CPU 추이"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -453,7 +453,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 60초"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="메모리 추이"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -472,7 +472,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="행을 클릭하면 위 그래프가 바뀝니다"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="장비 상세"/>
                                         </StackPanel>
                                     </DockPanel>
@@ -562,7 +562,7 @@
                                     <DockPanel>
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 20건"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="22" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
+                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="알람 이력"/>
                                         </StackPanel>
                                     </DockPanel>

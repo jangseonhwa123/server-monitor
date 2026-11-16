@@ -267,7 +267,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Canvas x:Name="DonutCanvas" Width="110" Height="110"/>
+                                    <Canvas x:Name="DonutCanvas" Width="140" Height="140"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
                                         <Grid Margin="0,4">
                                             <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>

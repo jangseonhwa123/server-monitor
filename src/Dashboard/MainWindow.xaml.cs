@@ -54,7 +54,7 @@ public partial class MainWindow : Window
     }
 
     private static void AddText(Canvas canvas, string text, double x, double y, double width,
-        TextAlignment align, double size = 14, Brush? brush = null, bool bold = false)
+        TextAlignment align, double size = 17, Brush? brush = null, bool bold = false)
     {
         var tb = new TextBlock
         {
@@ -77,7 +77,7 @@ public partial class MainWindow : Window
         var vm = _vm;
         if (vm == null) return;
 
-        const double size = 110, thickness = 16;
+        const double size = 140, thickness = 18;
         const double center = size / 2;
         const double radius = (size - thickness) / 2 - 2;
 
@@ -124,8 +124,8 @@ public partial class MainWindow : Window
             }
         }
 
-        AddText(DonutCanvas, total.ToString(), 0, 36, size, TextAlignment.Center, 28, InkBrush, bold: true);
-        AddText(DonutCanvas, "전체 장비", 0, 66, size, TextAlignment.Center, 13);
+        AddText(DonutCanvas, total.ToString(), 0, 40, size, TextAlignment.Center, 30, InkBrush, bold: true);
+        AddText(DonutCanvas, "전체 장비", 0, 80, size, TextAlignment.Center, 15);
     }
 
     // 선택한 장비의 최근 60초 그래프 (선 + 채우기)
@@ -136,7 +136,7 @@ public partial class MainWindow : Window
         double h = canvas.ActualHeight;
         if (w < 80 || h < 60) return;
 
-        const double left = 42, right = 10, top = 12, bottom = 28;
+        const double left = 50, right = 10, top = 14, bottom = 34;
         double plotW = w - left - right;
         double plotH = h - top - bottom;
         double Y(double v) => top + plotH * (1 - Math.Clamp(v, 0, 100) / 100.0);
@@ -148,7 +148,7 @@ public partial class MainWindow : Window
                 X1 = left, X2 = left + plotW, Y1 = Y(v), Y2 = Y(v),
                 Stroke = GridBrush, StrokeThickness = 1
             });
-            AddText(canvas, v.ToString(), 0, Y(v) - 10, left - 6, TextAlignment.Right);
+            AddText(canvas, v.ToString(), 0, Y(v) - 11, left - 6, TextAlignment.Right);
         }
 
         if (drawThreshold)
@@ -164,7 +164,7 @@ public partial class MainWindow : Window
         var history = _vm?.History;
         if (_vm?.SelectedDevice == null || history == null || history.Count == 0)
         {
-            AddText(canvas, "표시할 데이터가 없습니다", 0, h / 2 - 8, w, TextAlignment.Center, 15);
+            AddText(canvas, "표시할 데이터가 없습니다", 0, h / 2 - 8, w, TextAlignment.Center, 17);
             return;
         }
 
@@ -190,7 +190,7 @@ public partial class MainWindow : Window
         Canvas.SetTop(dot, last.Y - 4);
         canvas.Children.Add(dot);
 
-        AddText(canvas, "60초 전", left, h - 24, 90, TextAlignment.Left);
-        AddText(canvas, $"현재 {pick(history[history.Count - 1]):F1}%", w - right - 160, h - 24, 160, TextAlignment.Right);
+        AddText(canvas, "60초 전", left, h - 28, 100, TextAlignment.Left);
+        AddText(canvas, $"현재 {pick(history[history.Count - 1]):F1}%", w - right - 180, h - 28, 180, TextAlignment.Right);
     }
 }

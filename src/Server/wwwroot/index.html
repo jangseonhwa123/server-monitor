@@ -156,7 +156,7 @@ function donut(ok, warn, off) {
   let acc = 0;
   const seg = (n, color) => { if (!n) return ''; const len = L * n / total; const s = `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${len} ${L - len}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`; acc += len; return s; };
   const ring = total ? seg(ok, C.ok) + seg(warn, C.warn) + seg(off, C.off) : `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${C.grid}" stroke-width="16"/>`;
-  return `<svg viewBox="0 0 120 120" style="width:120px;flex:none" role="img" aria-label="장비 상태 비율">${ring}<text x="60" y="60" text-anchor="middle" font-size="28" font-weight="700" fill="#000000">${total}</text><text x="60" y="78" text-anchor="middle" font-size="14" fill="${C.sub}">전체 장비</text></svg>`;
+  return `<svg viewBox="0 0 120 120" style="width:150px;flex:none" role="img" aria-label="장비 상태 비율">${ring}<text x="60" y="58" text-anchor="middle" font-size="26" font-weight="700" fill="#000000">${total}</text><text x="60" y="76" text-anchor="middle" font-size="12" fill="${C.sub}">전체 장비</text></svg>`;
 }
 
 function renderSide() {

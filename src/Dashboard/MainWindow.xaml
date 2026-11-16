@@ -1,8 +1,8 @@
 <Window x:Class="Dashboard.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Server Monitor 관제" Height="900" Width="1320" MinWidth="1000" MinHeight="640"
-        FontFamily="Pretendard, Malgun Gothic, Segoe UI" FontSize="13"
+        Title="Server Monitor 관제" Height="960" Width="1500" MinWidth="1000" MinHeight="640"
+        FontFamily="Pretendard, Malgun Gothic, Segoe UI" FontSize="16"
         Foreground="#FF000000" Background="#FFF1FEEC">
     <Window.Resources>
         <SolidColorBrush x:Key="MintBrush" Color="#F1FEEC"/>
@@ -42,13 +42,13 @@
 
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource SubBrush}"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="15"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -74,7 +74,7 @@
         <Style x:Key="FlatHeader" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{StaticResource HeadBgBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource SubBrush}"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -178,7 +178,7 @@
             <Grid Margin="16,0">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Border Width="22" Height="22" CornerRadius="6" Background="{StaticResource LilacBrush}" Margin="0,0,10,0"/>
-                    <TextBlock Text="Server Monitor" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="Server Monitor" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
                     <TextBlock Text="장비 CPU·메모리 실시간 관제" Style="{StaticResource Hint}" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Border HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="14" Padding="12,5"
@@ -196,7 +196,7 @@
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
-                        <TextBlock Text="{Binding StatusText}" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding StatusText}" FontSize="15" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -204,7 +204,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="290"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -308,9 +308,9 @@
                                         <DataTemplate>
                                             <Grid Margin="0,6">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="78"/>
+                                                    <ColumnDefinition Width="96"/>
                                                     <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="44"/>
+                                                    <ColumnDefinition Width="56"/>
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                 <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="6,0">
@@ -348,9 +348,9 @@
                                         <DataTemplate>
                                             <Grid Margin="0,6">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="78"/>
+                                                    <ColumnDefinition Width="96"/>
                                                     <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="44"/>
+                                                    <ColumnDefinition Width="56"/>
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                 <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="6,0"
@@ -376,7 +376,7 @@
                                 </Border>
                                 <StackPanel Margin="13,12" MinHeight="110">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontSize="34" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontSize="42" FontWeight="Bold"/>
                                         <TextBlock Text="건" Style="{StaticResource Hint}" VerticalAlignment="Bottom" Margin="4,0,0,8"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding LatestAlertText, Mode=OneWay}" Style="{StaticResource Hint}" TextWrapping="Wrap" Margin="0,2,0,0"/>
@@ -402,25 +402,25 @@
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="현재 CPU" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="현재 메모리" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="CPU 60초 평균" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="CPU 60초 최대" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding MaxCpuText, Mode=OneWay}" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding MaxCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                             </UniformGrid>
@@ -481,7 +481,7 @@
                                           ItemsSource="{Binding Devices}"
                                           SelectedItem="{Binding SelectedDevice, Mode=TwoWay}">
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="상태" Width="90">
+                                        <DataGridTemplateColumn Header="상태" Width="100">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Border HorizontalAlignment="Left" CornerRadius="10" Padding="10,2">
@@ -498,7 +498,7 @@
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
-                                                        <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Status}" FontSize="15" FontWeight="SemiBold"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -514,7 +514,7 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Grid>
-                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="54"/></Grid.ColumnDefinitions>
+                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="64"/></Grid.ColumnDefinitions>
                                                         <ProgressBar Value="{Binding Cpu, Mode=OneWay}" Margin="0,0,8,0">
                                                             <ProgressBar.Style>
                                                                 <Style TargetType="ProgressBar" BasedOn="{StaticResource PillBar}">
@@ -536,7 +536,7 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Grid>
-                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="54"/></Grid.ColumnDefinitions>
+                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="64"/></Grid.ColumnDefinitions>
                                                         <ProgressBar Value="{Binding Memory, Mode=OneWay}" Margin="0,0,8,0"
                                                                      Style="{StaticResource PillBar}" Foreground="{StaticResource MemBrush}"/>
                                                         <TextBlock Grid.Column="1" Text="{Binding Memory, StringFormat={}{0:F1}%, Mode=OneWay}" HorizontalAlignment="Right"/>
@@ -544,7 +544,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="마지막 수신" Width="120">
+                                        <DataGridTemplateColumn Header="마지막 수신" Width="140">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding LastSeenLocal, Mode=OneWay}" Foreground="{StaticResource SubBrush}" HorizontalAlignment="Right"/>
@@ -570,7 +570,7 @@
                                 <DataGrid Style="{StaticResource FlatGrid}" MaxHeight="320" ItemsSource="{Binding Alerts}"
                                           SelectionMode="Single">
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="시각" Width="120">
+                                        <DataGridTemplateColumn Header="시각" Width="150">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Time}" Foreground="{StaticResource SubBrush}"/>
@@ -584,16 +584,16 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="종류" Width="70">
+                                        <DataGridTemplateColumn Header="종류" Width="80">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Border HorizontalAlignment="Left" CornerRadius="6" Padding="8,1" Background="{StaticResource BadSoftBrush}">
-                                                        <TextBlock Text="{Binding Type}" FontSize="12" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Type}" FontSize="15" FontWeight="SemiBold"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="값 / 기준" Width="140">
+                                        <DataGridTemplateColumn Header="값 / 기준" Width="170">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding ValueText, Mode=OneWay}" HorizontalAlignment="Right"/>

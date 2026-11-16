@@ -7,19 +7,19 @@
 <style>
 :root{--white:#fff;--mint:#F1FEEC;--sage:#FFFFFF;--dust:#E6E6E6;--lilac:#AC92A6;--ink:#000000;--sub:#525252;--cpu:#E896D9;--mem:#FEDBBE;--ok:#99D586;--warn:#F29797;--bad:#FF7066;--off:#a59fa8;--r:10px;--gap:11px;--shadow:0 2px 8px #00000014}
 *{box-sizing:border-box}
-body{margin:0;background:var(--mint);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Segoe UI",system-ui,sans-serif;font-size:13px;line-height:1.45}
-.topbar{height:52px;background:var(--white);border-bottom:1px solid var(--dust);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:5}
-.logo{display:flex;align-items:center;gap:var(--gap);font-weight:700;font-size:16px;letter-spacing:-.2px}
+body{margin:0;background:var(--mint);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.45}
+.topbar{height:60px;background:var(--white);border-bottom:1px solid var(--dust);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:var(--gap);font-weight:700;font-size:20px;letter-spacing:-.2px}
 .logo i{width:22px;height:22px;border-radius:6px;background:var(--lilac);display:inline-block}
-.logo small{font-weight:400;color:var(--sub);font-size:12px;margin-left:4px}
+.logo small{font-weight:400;color:var(--sub);font-size:15px;margin-left:4px}
 .right{display:flex;align-items:center;gap:12px;color:var(--sub)}
-.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:99px;background:var(--mint);border:1px solid var(--dust);font-size:12px;color:var(--sub)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:99px;background:var(--mint);border:1px solid var(--dust);font-size:15px;color:var(--sub)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--off);display:inline-block;flex:none}
 .pill.live{color:var(--ink)}.pill.live .dot{background:var(--ok);box-shadow:0 0 0 3px #99D58666}
 .pill.retry .dot{background:var(--warn)}.pill.off .dot{background:var(--bad)}
-.app{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 52px)}
+.app{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 60px)}
 .side{background:var(--sage);border-right:1px solid var(--dust);padding:12px}
-.side h3{margin:2px 0 8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.side h3{margin:2px 0 8px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
 .side h3 span{color:var(--sub);font-weight:400}
 #q{width:100%;padding:8px 10px;border:1px solid var(--dust);border-radius:8px;background:var(--white);color:var(--ink);font:inherit;margin-bottom:8px}
 #q:focus{outline:2px solid var(--lilac);outline-offset:0}
@@ -27,7 +27,7 @@ body{margin:0;background:var(--mint);color:var(--ink);font-family:"Pretendard","
 .item:hover{background:var(--mint)}
 .item.sel{background:var(--white);border-color:var(--lilac)}
 .item .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.item .p{color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums}
+.item .p{color:var(--sub);font-size:15px;font-variant-numeric:tabular-nums}
 .item.offline .n,.item.offline .p{opacity:.5}
 .st-ok{background:var(--ok)}.st-warn{background:var(--warn)}.st-offline{background:var(--off)}
 main{padding:12px;display:grid;gap:var(--gap);align-content:start;min-width:0}
@@ -38,36 +38,36 @@ main{padding:12px;display:grid;gap:var(--gap);align-content:start;min-width:0}
 .ch{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--dust);font-weight:700}
 .ch b{display:flex;align-items:center;font-weight:700}
 .ch b::before{content:"";width:4px;height:14px;background:var(--lilac);border-radius:2px;margin-right:8px}
-.ch small{color:var(--sub);font-weight:400;font-size:12px}
+.ch small{color:var(--sub);font-weight:400;font-size:15px}
 .cb{padding:12px 14px}
 .empty{color:var(--sub);text-align:center;padding:22px 0}
 .donut{display:flex;align-items:center;gap:14px}
 .lg div{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--sub)}
 .lg b{color:var(--ink);margin-left:auto;padding-left:14px;font-variant-numeric:tabular-nums}
-.topn .t{display:grid;grid-template-columns:84px 1fr 46px;gap:8px;align-items:center;margin:7px 0}
+.topn .t{display:grid;grid-template-columns:96px 1fr 56px;gap:8px;align-items:center;margin:7px 0}
 .topn .t span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .topn .t span:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .bar{height:10px;background:var(--dust);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;transition:width .3s}
-.big{font-size:34px;font-weight:700;letter-spacing:-1px;line-height:1.1}
-.big small{font-size:13px;font-weight:400;color:var(--sub);margin-left:4px;letter-spacing:0}
-.sub{color:var(--sub);font-size:12px;margin-top:6px}
+.big{font-size:42px;font-weight:700;letter-spacing:-1px;line-height:1.1}
+.big small{font-size:16px;font-weight:400;color:var(--sub);margin-left:4px;letter-spacing:0}
+.sub{color:var(--sub);font-size:15px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
 .kpi{background:var(--mint);border:1px solid var(--dust);border-radius:8px;padding:10px 12px}
-.kpi .l{color:var(--sub);font-size:12px}
-.kpi .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .l{color:var(--sub);font-size:15px}
+.kpi .v{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
 svg{display:block;width:100%;height:auto}
 table{width:100%;border-collapse:collapse}
-th{font-size:12px;color:var(--sub);text-align:left;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--dust);background:#f8fbf6}
+th{font-size:15px;color:var(--sub);text-align:left;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--dust);background:#f8fbf6}
 td{padding:9px 10px;border-bottom:1px solid #eef3ea;font-variant-numeric:tabular-nums}
 tr.r{cursor:pointer}tr.r:hover td{background:#f8fbf6}tr.r.sel td{background:#f3eef2}
 tr.offline td:not(:first-child){opacity:.55}
 td.num,th.num{text-align:right}
-.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:15px;font-weight:600}
 .badge.ok{background:color-mix(in srgb,var(--ok) 45%,#fff);color:var(--ink)}
 .badge.warn{background:color-mix(in srgb,var(--warn) 45%,#fff);color:var(--ink)}
 .badge.offline{background:#ece8ee;color:var(--sub)}
-.tag{display:inline-block;padding:1px 8px;border-radius:6px;background:color-mix(in srgb,var(--bad) 35%,#fff);color:var(--ink);font-size:12px;font-weight:600}
+.tag{display:inline-block;padding:1px 8px;border-radius:6px;background:color-mix(in srgb,var(--bad) 35%,#fff);color:var(--ink);font-size:15px;font-weight:600}
 .mini{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .mini .bar{width:70px;height:7px}
 .scroll{max-height:290px;overflow:auto}
@@ -156,7 +156,7 @@ function donut(ok, warn, off) {
   let acc = 0;
   const seg = (n, color) => { if (!n) return ''; const len = L * n / total; const s = `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${len} ${L - len}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`; acc += len; return s; };
   const ring = total ? seg(ok, C.ok) + seg(warn, C.warn) + seg(off, C.off) : `<circle r="${r}" cx="60" cy="60" fill="none" stroke="${C.grid}" stroke-width="16"/>`;
-  return `<svg viewBox="0 0 120 120" style="width:120px;flex:none" role="img" aria-label="장비 상태 비율">${ring}<text x="60" y="60" text-anchor="middle" font-size="24" font-weight="700" fill="#000000">${total}</text><text x="60" y="76" text-anchor="middle" font-size="10" fill="${C.sub}">전체 장비</text></svg>`;
+  return `<svg viewBox="0 0 120 120" style="width:120px;flex:none" role="img" aria-label="장비 상태 비율">${ring}<text x="60" y="60" text-anchor="middle" font-size="28" font-weight="700" fill="#000000">${total}</text><text x="60" y="76" text-anchor="middle" font-size="13" fill="${C.sub}">전체 장비</text></svg>`;
 }
 
 function renderSide() {
@@ -209,15 +209,15 @@ function area(key, color, threshold) {
   const x = i => L + (i + off) * iw / (HISTORY - 1), y = v => T + ih * (1 - pct(v) / 100);
   const xy = pts.map((p, i) => x(i).toFixed(1) + ',' + y(p[key]).toFixed(1));
   let grid = '';
-  for (const v of [0, 25, 50, 75, 100]) grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="${C.grid}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="${C.sub}">${v}</text>`;
+  for (const v of [0, 25, 50, 75, 100]) grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="${C.grid}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="13" fill="${C.sub}">${v}</text>`;
   const last = pts[pts.length - 1];
   const th = threshold ? `<line x1="${L}" x2="${W - R}" y1="${y(WARN)}" y2="${y(WARN)}" stroke="${C.bad}" stroke-dasharray="5 4" stroke-width="1.2"/>` : '';
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${key} 최근 60초 그래프">${grid}${th}
     <polygon points="${x(0).toFixed(1)},${y(0)} ${xy.join(' ')} ${x(pts.length - 1).toFixed(1)},${y(0)}" fill="${color}" fill-opacity=".16"/>
     <polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${xy.join(' ')}"/>
     <circle cx="${x(pts.length - 1)}" cy="${y(last[key])}" r="4" fill="${color}"/>
-    <text x="${L}" y="${H - 5}" font-size="10" fill="${C.sub}">60초 전</text>
-    <text x="${W - R}" y="${H - 5}" text-anchor="end" font-size="10" fill="${C.sub}">현재 ${last[key].toFixed(1)}%</text></svg>`;
+    <text x="${L}" y="${H - 5}" font-size="13" fill="${C.sub}">60초 전</text>
+    <text x="${W - R}" y="${H - 5}" text-anchor="end" font-size="13" fill="${C.sub}">현재 ${last[key].toFixed(1)}%</text></svg>`;
 }
 
 function renderTables() {

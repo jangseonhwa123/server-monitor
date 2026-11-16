@@ -42,7 +42,7 @@
 
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="24"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -215,7 +215,7 @@
                     <DockPanel DockPanel.Dock="Top" Margin="0,2,0,10">
                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}"
                                    Text="{Binding Devices.Count, StringFormat={}{0}대, Mode=OneWay}"/>
-                        <TextBlock Text="장비 목록" FontWeight="Bold" FontSize="20"/>
+                        <TextBlock Text="장비 목록" FontWeight="Bold" FontSize="24"/>
                     </DockPanel>
                     <ListBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
                              BorderThickness="0" Background="Transparent"

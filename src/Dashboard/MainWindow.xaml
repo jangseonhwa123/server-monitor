@@ -74,7 +74,7 @@
         <Style x:Key="FlatHeader" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{StaticResource HeadBgBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource SubBrush}"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontSize" Value="17"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>

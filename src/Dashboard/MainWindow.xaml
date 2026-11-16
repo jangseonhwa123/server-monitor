@@ -178,7 +178,7 @@
             <Grid Margin="16,0">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Border Width="22" Height="22" CornerRadius="6" Background="{StaticResource LilacBrush}" Margin="0,0,10,0"/>
-                    <TextBlock Text="Server Monitor" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="Server Monitor" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
                     <TextBlock Text="장비 CPU·메모리 실시간 관제" Style="{StaticResource Hint}" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Border HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="14" Padding="12,5"
@@ -376,7 +376,7 @@
                                 </Border>
                                 <StackPanel Margin="13,12" MinHeight="110">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontSize="42" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontSize="40" FontWeight="Bold"/>
                                         <TextBlock Text="건" Style="{StaticResource Hint}" VerticalAlignment="Bottom" Margin="4,0,0,8"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding LatestAlertText, Mode=OneWay}" Style="{StaticResource Hint}" TextWrapping="Wrap" Margin="0,2,0,0"/>
@@ -402,25 +402,25 @@
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="현재 CPU" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="현재 메모리" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="CPU 60초 평균" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
                                     <StackPanel>
                                         <TextBlock Text="CPU 60초 최대" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding MaxCpuText, Mode=OneWay}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding MaxCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                             </UniformGrid>

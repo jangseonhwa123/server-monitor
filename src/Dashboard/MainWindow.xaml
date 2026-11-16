@@ -262,7 +262,7 @@
                                         <TextBlock Style="{StaticResource CardTitle}" Text="장비 상태 요약"/>
                                     </StackPanel>
                                 </Border>
-                                <Grid Margin="13,12" Height="110">
+                                <Grid Margin="13,12" Height="140">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>

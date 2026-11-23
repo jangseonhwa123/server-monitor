@@ -79,11 +79,11 @@ td.num,th.num{text-align:right}
 .chart-box{padding:10px 14px 14px}
 
 /* 반짝이 장식 */
-.spark{position:absolute;pointer-events:none;width:64px;height:64px;filter:drop-shadow(0 0 8px #4FA3FF) drop-shadow(0 0 16px #7A5CFF);z-index:3}
+.spark{position:absolute;pointer-events:none;width:60px;height:60px;filter:drop-shadow(0 0 8px #4FA3FF) drop-shadow(0 0 16px #7A5CFF);z-index:3}
 .spark svg{width:100%;height:100%}
-#sp1{left:calc(300px - 32px);top:62px;position:fixed}
-#sp2{right:6px;top:34px;position:fixed;width:52px;height:52px}
-#sp3{left:calc(300px - 32px);bottom:20px;position:fixed;width:56px;height:56px}
+#sp1{left:268px;top:42px}
+#sp2{right:8px;top:50px;width:44px;height:44px}
+#sp3{right:-26px;bottom:18px;width:52px;height:52px}
 
 @media(max-width:1180px){.row3{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:800px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:2px solid var(--line2)}.row3,.row2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}.spark{display:none}}
@@ -98,11 +98,9 @@ td.num,th.num{text-align:right}
     </symbol>
   </defs>
 </svg>
-<div class="spark" id="sp1"><svg><use href="#star"/></svg></div>
-<div class="spark" id="sp2"><svg><use href="#star"/></svg></div>
-<div class="spark" id="sp3"><svg><use href="#star"/></svg></div>
-
 <div class="topbar">
+  <div class="spark" id="sp1"><svg><use href="#star"/></svg></div>
+  <div class="spark" id="sp2"><svg><use href="#star"/></svg></div>
   <div class="logo">
     <svg viewBox="0 0 48 48" aria-hidden="true">
       <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FA3FF"/><stop offset="1" stop-color="#A56CFF"/></linearGradient></defs>
@@ -116,6 +114,7 @@ td.num,th.num{text-align:right}
 </div>
 <div class="app">
   <aside class="side">
+    <div class="spark" id="sp3"><svg><use href="#star"/></svg></div>
     <h3>장비 목록 <span id="side-count"></span></h3>
     <input id="q" type="search" placeholder="검색" aria-label="장비 이름 검색">
     <div id="side-list"></div>

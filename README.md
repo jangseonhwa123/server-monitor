@@ -6,12 +6,10 @@
 에이전트가 지표를 수집해 서버로 보내고, 서버는 MySQL에 저장하면서 SignalR로 관제 화면에 즉시 밀어줍니다.
 
 ![web dashboard](docs/dashboard-web.png)
-*웹 대시보드: 서버가 직접 제공하며 브라우저로 접속합니다 (예시 데이터로 렌더링한 화면)*
+*웹 대시보드: 서버가 직접 제공하며 브라우저로 접속합니다 (시뮬레이션 에이전트 2대)*
 
-<!-- WPF 관제 화면 스크린샷은 새 디자인으로 다시 캡처한 뒤 docs/dashboard.png 로 교체하고 아래 주석을 풀어 주세요.
 ![dashboard](docs/dashboard.png)
 *WPF 관제 화면 (Windows)*
--->
 
 ## 주요 기능
 

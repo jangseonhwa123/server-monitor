@@ -37,11 +37,6 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="26"/>
             <Setter Property="Margin" Value="0,0,16,16"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.45" Color="#00D4FF"/>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <Style x:Key="CardHeader" TargetType="Border">
@@ -190,11 +185,8 @@
             <Setter Property="Fill" Value="White"/>
             <Setter Property="Stretch" Value="Fill"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="1" Color="#4FA3FF"/>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Stroke" Value="#6FA8FF"/>
+            <Setter Property="StrokeThickness" Value="2"/>
         </Style>
     </Window.Resources>
 
@@ -258,9 +250,6 @@
                         <!-- 검색 -->
                         <Border DockPanel.Dock="Top" CornerRadius="20" BorderThickness="2" Margin="0,0,0,18" Padding="12,5"
                                 BorderBrush="{StaticResource LineBrush}" Background="Black">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.45" Color="#00D4FF"/>
-                            </Border.Effect>
                             <Grid>
                                 <TextBlock Text="검색" FontSize="17" HorizontalAlignment="Center"
                                            IsHitTestVisible="False">

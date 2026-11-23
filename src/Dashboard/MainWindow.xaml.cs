@@ -13,15 +13,15 @@ public partial class MainWindow : Window
 {
     private const int MaxPoints = 60;
 
-    private static readonly SolidColorBrush GridBrush = Frozen("#E6E6E6");
-    private static readonly SolidColorBrush SubBrush = Frozen("#525252");
-    private static readonly SolidColorBrush InkBrush = Frozen("#000000");
-    private static readonly SolidColorBrush CpuBrush = Frozen("#E896D9");
-    private static readonly SolidColorBrush MemBrush = Frozen("#FEDBBE");
-    private static readonly SolidColorBrush OkBrush = Frozen("#99D586");
-    private static readonly SolidColorBrush WarnBrush = Frozen("#F29797");
-    private static readonly SolidColorBrush OffBrush = Frozen("#A5A5A5");
-    private static readonly SolidColorBrush BadBrush = Frozen("#FF7066");
+    private static readonly SolidColorBrush GridBrush = Frozen("#1B2747");
+    private static readonly SolidColorBrush SubBrush = Frozen("#9FB0D0");
+    private static readonly SolidColorBrush InkBrush = Frozen("#FFFFFF");
+    private static readonly SolidColorBrush CpuBrush = Frozen("#B26BFF");
+    private static readonly SolidColorBrush MemBrush = Frozen("#FFB066");
+    private static readonly SolidColorBrush OkBrush = Frozen("#6C4CFF");
+    private static readonly SolidColorBrush WarnBrush = Frozen("#FF5C7A");
+    private static readonly SolidColorBrush OffBrush = Frozen("#7A7F8C");
+    private static readonly SolidColorBrush BadBrush = Frozen("#FF5C7A");
 
     private MainViewModel? _vm;
 
@@ -45,6 +45,17 @@ public partial class MainWindow : Window
     }
 
     private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e) => DrawAll();
+
+    // 장비 목록 검색: 이름에 입력한 글자가 들어 있는 장비만 보여줍니다
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_vm == null) return;
+        var text = SearchBox.Text.Trim();
+        var view = System.Windows.Data.CollectionViewSource.GetDefaultView(_vm.Devices);
+        view.Filter = string.IsNullOrEmpty(text)
+            ? null
+            : o => o is DeviceRowViewModel d && d.DeviceName.Contains(text, StringComparison.OrdinalIgnoreCase);
+    }
 
     private void DrawAll()
     {
@@ -178,7 +189,7 @@ public partial class MainWindow : Window
         foreach (var p in points) area.Add(p);
         area.Add(new Point(X(history.Count - 1), Y(0)));
 
-        canvas.Children.Add(new Polygon { Points = area, Fill = color, Opacity = 0.16 });
+        canvas.Children.Add(new Polygon { Points = area, Fill = color, Opacity = 0.2 });
         canvas.Children.Add(new Polyline
         {
             Points = points, Stroke = color, StrokeThickness = 2, StrokeLineJoin = PenLineJoin.Round

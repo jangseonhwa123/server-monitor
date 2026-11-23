@@ -1,48 +1,59 @@
 <Window x:Class="Dashboard.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Server Monitor 관제" Height="960" Width="1500" MinWidth="1000" MinHeight="640"
+        Title="PulseMon 관제" Height="960" Width="1500" MinWidth="1000" MinHeight="640"
         FontFamily="Pretendard, Malgun Gothic, Segoe UI" FontSize="16"
-        Foreground="#FF000000" Background="#FFF1FEEC">
+        Foreground="#FFEAF2FF" Background="#FF000000">
     <Window.Resources>
-        <SolidColorBrush x:Key="MintBrush" Color="#F1FEEC"/>
-        <SolidColorBrush x:Key="DustBrush" Color="#E6E6E6"/>
-        <SolidColorBrush x:Key="LilacBrush" Color="#AC92A6"/>
-        <SolidColorBrush x:Key="SubBrush" Color="#525252"/>
-        <SolidColorBrush x:Key="CpuBrush" Color="#E896D9"/>
-        <SolidColorBrush x:Key="MemBrush" Color="#FEDBBE"/>
-        <SolidColorBrush x:Key="OkBrush" Color="#99D586"/>
-        <SolidColorBrush x:Key="WarnBrush" Color="#F29797"/>
-        <SolidColorBrush x:Key="BadBrush" Color="#FF7066"/>
-        <SolidColorBrush x:Key="OffBrush" Color="#A5A5A5"/>
-        <SolidColorBrush x:Key="OkSoftBrush" Color="#D1ECC8"/>
-        <SolidColorBrush x:Key="WarnSoftBrush" Color="#F9D0D0"/>
-        <SolidColorBrush x:Key="BadSoftBrush" Color="#FFCDC9"/>
-        <SolidColorBrush x:Key="SelSoftBrush" Color="#F3EEF2"/>
-        <SolidColorBrush x:Key="HeadBgBrush" Color="#F8FEF6"/>
+        <SolidColorBrush x:Key="LineBrush" Color="#00D4FF"/>
+        <SolidColorBrush x:Key="Line2Brush" Color="#3A5BFF"/>
+        <SolidColorBrush x:Key="TitleBrush" Color="#6EF2A0"/>
+        <SolidColorBrush x:Key="YellowBrush" Color="#E8D82A"/>
+        <SolidColorBrush x:Key="KpiBrush" Color="#A9B77A"/>
+        <SolidColorBrush x:Key="SubBrush" Color="#9FB0D0"/>
+        <SolidColorBrush x:Key="GridBrush" Color="#1B2747"/>
+        <SolidColorBrush x:Key="RowLineBrush" Color="#101A33"/>
+        <SolidColorBrush x:Key="CpuBrush" Color="#B26BFF"/>
+        <SolidColorBrush x:Key="MemBrush" Color="#FFB066"/>
+        <SolidColorBrush x:Key="RingBrush" Color="#6C4CFF"/>
+        <SolidColorBrush x:Key="OkBrush" Color="#5CFF9D"/>
+        <SolidColorBrush x:Key="WarnBrush" Color="#FF5C7A"/>
+        <SolidColorBrush x:Key="BadBrush" Color="#FF5C7A"/>
+        <SolidColorBrush x:Key="OffBrush" Color="#7A7F8C"/>
+        <SolidColorBrush x:Key="TrackBrush" Color="#0D0D14"/>
+        <SolidColorBrush x:Key="TrackLineBrush" Color="#AAB4D8"/>
+        <SolidColorBrush x:Key="SelSoftBrush" Color="#06101F"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#0B1530"/>
+        <SolidColorBrush x:Key="BadSoftBrush" Color="#33FF5C7A"/>
+        <LinearGradientBrush x:Key="LogoBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#4FA3FF" Offset="0"/>
+            <GradientStop Color="#A56CFF" Offset="1"/>
+        </LinearGradientBrush>
 
+        <!-- 네온 카드 -->
         <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource DustBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Margin" Value="0,0,11,11"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="26"/>
+            <Setter Property="Margin" Value="0,0,16,16"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="0.08" Color="Black"/>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.45" Color="#00D4FF"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <Style x:Key="CardHeader" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource DustBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line2Brush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="Padding" Value="13,9"/>
+            <Setter Property="Padding" Value="16,10,16,8"/>
         </Style>
 
         <Style x:Key="CardTitle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="Foreground" Value="{StaticResource TitleBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -53,17 +64,18 @@
         </Style>
 
         <Style x:Key="PillBar" TargetType="ProgressBar">
-            <Setter Property="Height" Value="10"/>
+            <Setter Property="Height" Value="12"/>
             <Setter Property="Minimum" Value="0"/>
             <Setter Property="Maximum" Value="100"/>
-            <Setter Property="Foreground" Value="{StaticResource LilacBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource CpuBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
                         <Grid>
-                            <Border x:Name="PART_Track" Background="{StaticResource DustBrush}" CornerRadius="5"/>
-                            <Border x:Name="PART_Indicator" HorizontalAlignment="Left"
+                            <Border x:Name="PART_Track" Background="{StaticResource TrackBrush}"
+                                    BorderBrush="{StaticResource TrackLineBrush}" BorderThickness="1" CornerRadius="6"/>
+                            <Border x:Name="PART_Indicator" HorizontalAlignment="Left" Margin="1"
                                     Background="{TemplateBinding Foreground}" CornerRadius="5"/>
                         </Grid>
                     </ControlTemplate>
@@ -72,20 +84,20 @@
         </Style>
 
         <Style x:Key="FlatHeader" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="{StaticResource HeadBgBrush}"/>
+            <Setter Property="Background" Value="Black"/>
             <Setter Property="Foreground" Value="{StaticResource SubBrush}"/>
-            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Padding" Value="12,8"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="{StaticResource DustBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line2Brush}"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
         <Style x:Key="FlatCell" TargetType="DataGridCell">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Padding" Value="12,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridCell">
@@ -98,27 +110,29 @@
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#FFEAF2FF"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="FlatRow" TargetType="DataGridRow">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="#FFEAF2FF"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="{StaticResource SelSoftBrush}"/>
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#FFEAF2FF"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="FlatGrid" TargetType="DataGrid">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="#FFEAF2FF"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DustBrush}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource RowLineBrush}"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="RowHeaderWidth" Value="0"/>
             <Setter Property="RowHeight" Value="38"/>
@@ -134,8 +148,8 @@
         </Style>
 
         <Style x:Key="StatusDot" TargetType="Ellipse">
-            <Setter Property="Width" Value="8"/>
-            <Setter Property="Height" Value="8"/>
+            <Setter Property="Width" Value="10"/>
+            <Setter Property="Height" Value="10"/>
             <Setter Property="Fill" Value="{StaticResource OffBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Style.Triggers>
@@ -152,425 +166,360 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="Bd" CornerRadius="8" BorderThickness="1" BorderBrush="Transparent"
-                                Background="Transparent" Padding="10,8" Margin="0,0,0,2">
+                        <Border x:Name="Bd" CornerRadius="12" BorderThickness="1" BorderBrush="Transparent"
+                                Background="Transparent" Padding="8,7" Margin="0,0,0,2">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource MintBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource MintBrush}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource LilacBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource SelSoftBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#5500D4FF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- 별 모양 장식 -->
+        <Style x:Key="Spark" TargetType="Path">
+            <Setter Property="Data" Value="M50,0 L56,44 L100,50 L56,56 L50,100 L44,56 L0,50 L44,44 Z"/>
+            <Setter Property="Fill" Value="White"/>
+            <Setter Property="Stretch" Value="Fill"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="1" Color="#4FA3FF"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <DockPanel>
-        <!-- 상단 바 -->
-        <Border DockPanel.Dock="Top" Height="52" Background="White"
-                BorderBrush="{StaticResource DustBrush}" BorderThickness="0,0,0,1">
-            <Grid Margin="16,0">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="22" Height="22" CornerRadius="6" Background="{StaticResource LilacBrush}" Margin="0,0,10,0"/>
-                    <TextBlock Text="Server Monitor" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <TextBlock Text="장비 CPU·메모리 실시간 관제" Style="{StaticResource Hint}" Margin="10,0,0,0"/>
-                </StackPanel>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="14" Padding="12,5"
-                        Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center">
-                            <Ellipse.Style>
-                                <Style TargetType="Ellipse">
-                                    <Setter Property="Fill" Value="{StaticResource WarnBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                            <Setter Property="Fill" Value="{StaticResource OkBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Ellipse.Style>
-                        </Ellipse>
-                        <TextBlock Text="{Binding StatusText}" FontSize="15" VerticalAlignment="Center"/>
+    <Grid>
+        <DockPanel>
+            <!-- 상단 바 -->
+            <Border DockPanel.Dock="Top" Height="72" Background="Black"
+                    BorderBrush="{StaticResource Line2Brush}" BorderThickness="0,0,0,2">
+                <Grid Margin="24,0,78,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Grid Width="44" Height="44" Margin="0,0,10,0">
+                            <Ellipse Width="30" Height="30" Fill="#0B0F2A" Stroke="{StaticResource LogoBrush}" StrokeThickness="2.5"/>
+                            <Ellipse Width="44" Height="14" Stroke="{StaticResource LogoBrush}" StrokeThickness="2">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="-25" CenterX="22" CenterY="7"/>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                            <Polyline Stroke="#6EF2FF" StrokeThickness="2.2" StrokeLineJoin="Round"
+                                      Points="8,23 16,23 19,14 24,31 28,20 31,23 36,23"/>
+                        </Grid>
+                        <TextBlock Text="PulseMon" FontSize="30" FontWeight="ExtraBold" FontStyle="Italic"
+                                   Foreground="{StaticResource LogoBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="290"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- 사이드바: 장비 목록 -->
-            <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource DustBrush}"
-                    BorderThickness="0,0,1,0" Padding="12">
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top" Margin="0,2,0,10">
-                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}"
-                                   Text="{Binding Devices.Count, StringFormat={}{0}대, Mode=OneWay}"/>
-                        <TextBlock Text="장비 목록" FontWeight="Bold" FontSize="20"/>
-                    </DockPanel>
-                    <ListBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
-                             BorderThickness="0" Background="Transparent"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             ItemContainerStyle="{StaticResource SideItem}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Ellipse Style="{StaticResource StatusDot}" Margin="0,0,10,0"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding DeviceName}" FontWeight="SemiBold"
-                                               TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="2" Style="{StaticResource Hint}"
-                                               Text="{Binding Cpu, StringFormat={}{0:F0}%, Mode=OneWay}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </DockPanel>
-            </Border>
-
-            <!-- 본문 -->
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="12,12,1,1">
-
-                    <!-- 위젯 4개 -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.35*"/>
-                            <ColumnDefinition Width="1.15*"/>
-                            <ColumnDefinition Width="1.15*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                        <TextBlock Style="{StaticResource CardTitle}" Text="장비 상태 요약"/>
-                                    </StackPanel>
-                                </Border>
-                                <Grid Margin="13,12" Height="140">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Canvas x:Name="DonutCanvas" Width="140" Height="140"/>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
-                                        <Grid Margin="0,4">
-                                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource OkBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Grid.Column="1" Text="정상" Foreground="{StaticResource SubBrush}"/>
-                                            <TextBlock Grid.Column="2" Text="{Binding OkCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
-                                        </Grid>
-                                        <Grid Margin="0,4">
-                                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource WarnBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Grid.Column="1" Text="경고 (80%↑)" Foreground="{StaticResource SubBrush}"/>
-                                            <TextBlock Grid.Column="2" Text="{Binding WarnCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
-                                        </Grid>
-                                        <Grid Margin="0,4">
-                                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource OffBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Grid.Column="1" Text="오프라인" Foreground="{StaticResource SubBrush}"/>
-                                            <TextBlock Grid.Column="2" Text="{Binding OfflineCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
-                                        </Grid>
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="%"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="CPU 사용률 Top 5"/>
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <ItemsControl ItemsSource="{Binding TopCpu}" Margin="13,8" MinHeight="110">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="96"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="56"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="6,0">
-                                                    <ProgressBar.Style>
-                                                        <Style TargetType="ProgressBar" BasedOn="{StaticResource PillBar}">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsHigh}" Value="True">
-                                                                    <Setter Property="Foreground" Value="{StaticResource BadBrush}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </ProgressBar.Style>
-                                                </ProgressBar>
-                                                <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat={}{0:F1}, Mode=OneWay}" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="2" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="%"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="메모리 사용률 Top 5"/>
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <ItemsControl ItemsSource="{Binding TopMemory}" Margin="13,8" MinHeight="110">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="96"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="56"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="6,0"
-                                                             Style="{StaticResource PillBar}" Foreground="{StaticResource MemBrush}"/>
-                                                <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat={}{0:F1}, Mode=OneWay}" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="3" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 20건 기준"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="알람 현황"/>
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <StackPanel Margin="13,12" MinHeight="110">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontSize="40" FontWeight="Bold"/>
-                                        <TextBlock Text="건" Style="{StaticResource Hint}" VerticalAlignment="Bottom" Margin="4,0,0,8"/>
-                                    </StackPanel>
-                                    <TextBlock Text="{Binding LatestAlertText, Mode=OneWay}" Style="{StaticResource Hint}" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                    <TextBlock Text="{Binding AlertTopText, Mode=OneWay}" Style="{StaticResource Hint}" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-                    <!-- 선택 장비 KPI -->
-                    <Border Style="{StaticResource Card}">
-                        <StackPanel>
-                            <Border Style="{StaticResource CardHeader}">
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 60초 기준"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                        <TextBlock Style="{StaticResource CardTitle}" Text="{Binding SelectedTitle, Mode=OneWay}"/>
-                                    </StackPanel>
-                                </DockPanel>
-                            </Border>
-                            <UniformGrid Columns="4" Margin="13,12,3,12">
-                                <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
-                                    <StackPanel>
-                                        <TextBlock Text="현재 CPU" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
-                                    <StackPanel>
-                                        <TextBlock Text="현재 메모리" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
-                                    <StackPanel>
-                                        <TextBlock Text="CPU 60초 평균" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource MintBrush}" BorderBrush="{StaticResource DustBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,10,0">
-                                    <StackPanel>
-                                        <TextBlock Text="CPU 60초 최대" Style="{StaticResource Hint}"/>
-                                        <TextBlock Text="{Binding MaxCpuText, Mode=OneWay}" FontSize="26" FontWeight="Bold" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                            </UniformGrid>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="16" Padding="14,5"
+                            Background="Black" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="10" Height="10" Margin="0,0,8,0" VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="{StaticResource WarnBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource OkBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding StatusText}" FontSize="15" Foreground="{StaticResource SubBrush}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
+                </Grid>
+            </Border>
 
-                    <!-- 그래프 2개 -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="점선: 경고 80%"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="CPU 추이"/>
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <Canvas x:Name="CpuCanvas" Height="210" Margin="13,10" ClipToBounds="True" SizeChanged="Canvas_SizeChanged"/>
-                            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 사이드바: 장비 목록 -->
+                <Border Grid.Column="0" Background="Black" BorderBrush="{StaticResource Line2Brush}"
+                        BorderThickness="0,0,2,0" Padding="20,16">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="0,4,0,14">
+                            <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" VerticalAlignment="Bottom"
+                                       Text="{Binding Devices.Count, StringFormat={}{0}대, Mode=OneWay}"/>
+                            <TextBlock Text="장비 목록" FontSize="28" Foreground="{StaticResource YellowBrush}"/>
+                        </DockPanel>
+
+                        <!-- 검색 -->
+                        <Border DockPanel.Dock="Top" CornerRadius="20" BorderThickness="2" Margin="0,0,0,18" Padding="12,5"
+                                BorderBrush="{StaticResource LineBrush}" Background="Black">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.45" Color="#00D4FF"/>
+                            </Border.Effect>
+                            <Grid>
+                                <TextBlock Text="검색" FontSize="17" HorizontalAlignment="Center"
+                                           IsHitTestVisible="False">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" FontSize="17"
+                                         Foreground="#FFEAF2FF" CaretBrush="#FFEAF2FF" TextAlignment="Center"
+                                         TextChanged="SearchBox_TextChanged"/>
+                            </Grid>
                         </Border>
-                        <Border Grid.Column="1" Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 60초"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="메모리 추이"/>
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <Canvas x:Name="MemCanvas" Height="210" Margin="13,10" ClipToBounds="True" SizeChanged="Canvas_SizeChanged"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
 
-                    <!-- 표 2개 (세로로 쌓아 각각 전체 폭 사용) -->
-                    <StackPanel>
+                        <ListBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
+                                 BorderThickness="0" Background="Transparent" Foreground="#FFEAF2FF"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ItemContainerStyle="{StaticResource SideItem}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="26"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse HorizontalAlignment="Left">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock Text="★" FontSize="20" Foreground="{StaticResource LineBrush}" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Left">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="{Binding DeviceName}" FontSize="19"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="2" Style="{StaticResource Hint}" FontSize="19"
+                                                   Text="{Binding Cpu, StringFormat={}{0:F0}%, Mode=OneWay}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </Border>
 
-                        <Border Style="{StaticResource Card}">
-                            <StackPanel>
-                                <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="행을 클릭하면 위 그래프가 바뀝니다"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="장비 상세"/>
+                <!-- 본문 -->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="22,20,6,4">
+
+                        <!-- 위젯 3개 -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardHeader}">
+                                        <TextBlock Style="{StaticResource CardTitle}" Text="장비 상태 요약"/>
+                                    </Border>
+                                    <Grid Margin="16,12" Height="140">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Canvas x:Name="DonutCanvas" Width="140" Height="140"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <Ellipse Width="10" Height="10" Fill="{StaticResource RingBrush}" Margin="0,0,8,0"/>
+                                                <TextBlock Grid.Column="1" Text="정상" Foreground="{StaticResource SubBrush}"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding OkCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
+                                            </Grid>
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <Ellipse Width="10" Height="10" Fill="{StaticResource WarnBrush}" Margin="0,0,8,0"/>
+                                                <TextBlock Grid.Column="1" Text="경고 (80%↑)" Foreground="{StaticResource SubBrush}"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding WarnCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
+                                            </Grid>
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <Ellipse Width="10" Height="10" Fill="{StaticResource OffBrush}" Margin="0,0,8,0"/>
+                                                <TextBlock Grid.Column="1" Text="오프라인" Foreground="{StaticResource SubBrush}"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding OfflineCount, Mode=OneWay}" FontWeight="SemiBold" Margin="6,0,0,0"/>
+                                            </Grid>
+                                            <Border BorderBrush="{StaticResource GridBrush}" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,8,0,0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                    <TextBlock Text="알람 (최근 20건)" Foreground="{StaticResource SubBrush}"/>
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding AlertCountText, Mode=OneWay}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="건" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
                                         </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                                <DataGrid Style="{StaticResource FlatGrid}" MaxHeight="320"
-                                          ItemsSource="{Binding Devices}"
-                                          SelectedItem="{Binding SelectedDevice, Mode=TwoWay}">
-                                    <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="상태" Width="100">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Border HorizontalAlignment="Left" CornerRadius="10" Padding="10,2">
-                                                        <Border.Style>
-                                                            <Style TargetType="Border">
-                                                                <Setter Property="Background" Value="{StaticResource DustBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardHeader}">
+                                        <TextBlock Style="{StaticResource CardTitle}" Text="CPU 사용률 Top 5"/>
+                                    </Border>
+                                    <ItemsControl ItemsSource="{Binding TopCpu}" Margin="16,8" MinHeight="150">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,7">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="84"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis"/>
+                                                    <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="8,0">
+                                                        <ProgressBar.Style>
+                                                            <Style TargetType="ProgressBar" BasedOn="{StaticResource PillBar}">
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="정상">
-                                                                        <Setter Property="Background" Value="{StaticResource OkSoftBrush}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="경고">
-                                                                        <Setter Property="Background" Value="{StaticResource WarnSoftBrush}"/>
+                                                                    <DataTrigger Binding="{Binding IsHigh}" Value="True">
+                                                                        <Setter Property="Foreground" Value="{StaticResource BadBrush}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-                                                        </Border.Style>
-                                                        <TextBlock Text="{Binding Status}" FontSize="15" FontWeight="SemiBold"/>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="장비" Width="*">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding DeviceName}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="CPU" Width="160">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="64"/></Grid.ColumnDefinitions>
-                                                        <ProgressBar Value="{Binding Cpu, Mode=OneWay}" Margin="0,0,8,0">
-                                                            <ProgressBar.Style>
-                                                                <Style TargetType="ProgressBar" BasedOn="{StaticResource PillBar}">
-                                                                    <Setter Property="Foreground" Value="{StaticResource CpuBrush}"/>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="경고">
-                                                                            <Setter Property="Foreground" Value="{StaticResource BadBrush}"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </ProgressBar.Style>
-                                                        </ProgressBar>
-                                                        <TextBlock Grid.Column="1" Text="{Binding Cpu, StringFormat={}{0:F1}%, Mode=OneWay}" HorizontalAlignment="Right"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="메모리" Width="160">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="64"/></Grid.ColumnDefinitions>
-                                                        <ProgressBar Value="{Binding Memory, Mode=OneWay}" Margin="0,0,8,0"
-                                                                     Style="{StaticResource PillBar}" Foreground="{StaticResource MemBrush}"/>
-                                                        <TextBlock Grid.Column="1" Text="{Binding Memory, StringFormat={}{0:F1}%, Mode=OneWay}" HorizontalAlignment="Right"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="마지막 수신" Width="140">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding LastSeenLocal, Mode=OneWay}" Foreground="{StaticResource SubBrush}" HorizontalAlignment="Right"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                                        </ProgressBar.Style>
+                                                    </ProgressBar>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat={}{0:F1}, Mode=OneWay}" FontSize="15" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource Card}" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardHeader}">
+                                        <TextBlock Style="{StaticResource CardTitle}" Text="메모리 사용률 Top 5"/>
+                                    </Border>
+                                    <ItemsControl ItemsSource="{Binding TopMemory}" Margin="16,8" MinHeight="150">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,7">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="84"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis"/>
+                                                    <ProgressBar Grid.Column="1" Value="{Binding Value, Mode=OneWay}" Margin="8,0"
+                                                                 Style="{StaticResource PillBar}" Foreground="{StaticResource MemBrush}"/>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat={}{0:F1}, Mode=OneWay}" FontSize="15" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- 선택 장비 KPI -->
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                            <StackPanel>
+                                <Border Style="{StaticResource CardHeader}">
+                                    <Grid>
+                                        <TextBlock Style="{StaticResource CardTitle}" Text="{Binding SelectedTitle, Mode=OneWay}"/>
+                                        <TextBlock Style="{StaticResource Hint}" HorizontalAlignment="Right" Text="최근 60초 기준"/>
+                                    </Grid>
+                                </Border>
+                                <UniformGrid Columns="3" Margin="16,16,0,18">
+                                    <Border Background="Black" BorderBrush="{StaticResource KpiBrush}" BorderThickness="2" CornerRadius="22" Padding="12,14" Margin="0,0,16,0">
+                                        <StackPanel>
+                                            <TextBlock Text="현재 CPU" FontSize="17" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentCpuText, Mode=OneWay}" FontSize="36" FontWeight="Bold" Foreground="#FFEDEDED" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="Black" BorderBrush="{StaticResource KpiBrush}" BorderThickness="2" CornerRadius="22" Padding="12,14" Margin="0,0,16,0">
+                                        <StackPanel>
+                                            <TextBlock Text="현재 메모리" FontSize="17" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentMemoryText, Mode=OneWay}" FontSize="36" FontWeight="Bold" Foreground="#FFEDEDED" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="Black" BorderBrush="{StaticResource KpiBrush}" BorderThickness="2" CornerRadius="22" Padding="12,14" Margin="0,0,16,0">
+                                        <StackPanel>
+                                            <TextBlock Text="CPU 60초 평균" FontSize="17" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding AvgCpuText, Mode=OneWay}" FontSize="36" FontWeight="Bold" Foreground="#FFEDEDED" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
                             </StackPanel>
                         </Border>
 
-                        <Border Style="{StaticResource Card}">
+                        <!-- 그래프 2개 -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardHeader}">
+                                        <Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="CPU 추이"/>
+                                            <TextBlock Style="{StaticResource Hint}" HorizontalAlignment="Right" Text="점선: 경고 80%"/>
+                                        </Grid>
+                                    </Border>
+                                    <Canvas x:Name="CpuCanvas" Height="230" Margin="14,10" ClipToBounds="True" SizeChanged="Canvas_SizeChanged"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardHeader}">
+                                        <Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="메모리 추이"/>
+                                            <TextBlock Style="{StaticResource Hint}" HorizontalAlignment="Right" Text="최근 60초"/>
+                                        </Grid>
+                                    </Border>
+                                    <Canvas x:Name="MemCanvas" Height="230" Margin="14,10" ClipToBounds="True" SizeChanged="Canvas_SizeChanged"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- 알람 이력 -->
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,16">
                             <StackPanel>
                                 <Border Style="{StaticResource CardHeader}">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Text="최근 20건"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="4" Height="18" CornerRadius="2" Background="{StaticResource LilacBrush}" Margin="0,0,8,0"/>
-                                            <TextBlock Style="{StaticResource CardTitle}" Text="알람 이력"/>
-                                        </StackPanel>
-                                    </DockPanel>
+                                    <Grid>
+                                        <TextBlock Style="{StaticResource CardTitle}" Text="알람 이력"/>
+                                        <TextBlock Style="{StaticResource Hint}" HorizontalAlignment="Right" Text="최근 20건"/>
+                                    </Grid>
                                 </Border>
-                                <DataGrid Style="{StaticResource FlatGrid}" MaxHeight="320" ItemsSource="{Binding Alerts}"
-                                          SelectionMode="Single">
+                                <DataGrid Style="{StaticResource FlatGrid}" MaxHeight="300" ItemsSource="{Binding Alerts}"
+                                          SelectionMode="Single" Margin="4,2,4,10">
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="시각" Width="150">
+                                        <DataGridTemplateColumn Header="시각" Width="170">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Time}" Foreground="{StaticResource SubBrush}"/>
@@ -584,11 +533,13 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="종류" Width="80">
+                                        <DataGridTemplateColumn Header="종류" Width="90">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <Border HorizontalAlignment="Left" CornerRadius="6" Padding="8,1" Background="{StaticResource BadSoftBrush}">
-                                                        <TextBlock Text="{Binding Type}" FontSize="15" FontWeight="SemiBold"/>
+                                                    <Border HorizontalAlignment="Left" CornerRadius="6" Padding="9,1"
+                                                            Background="{StaticResource BadSoftBrush}"
+                                                            BorderBrush="{StaticResource WarnBrush}" BorderThickness="1">
+                                                        <TextBlock Text="{Binding Type}" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFD0D8"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -604,10 +555,15 @@
                                 </DataGrid>
                             </StackPanel>
                         </Border>
-                    </StackPanel>
 
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
-    </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </DockPanel>
+
+        <!-- 반짝이 장식 -->
+        <Path Style="{StaticResource Spark}" Width="60" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="270,42,0,0"/>
+        <Path Style="{StaticResource Spark}" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,46,6,0"/>
+        <Path Style="{StaticResource Spark}" Width="54" Height="54" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="273,0,0,20"/>
+    </Grid>
 </Window>
